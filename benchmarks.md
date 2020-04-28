@@ -1,7 +1,6 @@
 ---
 description: >-
-  This benchmarks aims to compare the performance of Fiber and other web
-  frameworks.
+  This benchmarks aims to compare the performance of Fiber and other web frameworks.
 ---
 
 # 🤖 Benchmarks
@@ -27,8 +26,8 @@ description: >-
 
 ### Data Updates
 
-**Fiber** handled **11,846** responses per second with an average latency of **42.8** ms.  
-**Express** handled **2,066** responses per second with an average latency of **390.44** ms.
+**Fiber** handled **11,846** responses  per second with an average latency of **42.8** ms.  
+**Express** handled **2,066** responses  per second with an average latency of **390.44** ms.
 
 ![](.gitbook/assets/data_updates.png)
 
@@ -37,7 +36,7 @@ description: >-
 ### Multiple Queries
 
 **Fiber** handled **19,664** responses per second with an average latency of **25.7** ms.  
-**Express** handled **4,302** responses per second with an average latency of **117.2** ms.
+**Express** handled **4,302** responses  per second with an average latency of **117.2** ms.
 
 ![](.gitbook/assets/multiple_queries%20%281%29.png)
 
@@ -46,7 +45,7 @@ description: >-
 ### Single Query
 
 **Fiber** handled **368,647** responses per second with an average latency of **0.7** ms.  
-**Express** handled **57,880** responses per second with an average latency of **4.4** ms.
+**Express** handled **57,880** responses  per second with an average latency of **4.4** ms.
 
 ![](.gitbook/assets/single_query%20%282%29.png)
 
@@ -55,7 +54,7 @@ description: >-
 ### JSON Serialization
 
 **Fiber** handled **1,146,667** responses per second with an average latency of **0.4** ms.  
-**Express** handled **244,847** responses per second with an average latency of **1.1** ms.
+**Express** handled **244,847** responses  per second with an average latency of **1.1** ms.
 
 ![](.gitbook/assets/json%20%281%29.png)
 
