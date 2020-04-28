@@ -1,7 +1,6 @@
 ---
 description: >-
-  This benchmarks aims to compare the performance of Fiber and other web
-  frameworks.
+  This benchmarks aims to compare the performance of Fiber and other web frameworks.
 ---
 
 # 🤖 Benchmarks
