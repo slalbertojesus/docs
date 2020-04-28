@@ -89,7 +89,7 @@ func main() {
 | DisableDefaultContentType | `bool` | When set to true, causes the default Content-Type header to be excluded from the Response. | `false` |
 | DisableStartupMessage | `bool` | When set to true, it will not print out the fiber ASCII and "listening" on message | `false` |
 | ETag | `bool` | Enable or disable ETag header generation, since both weak and strong etags are generated using the same hashing method \(CRC-32\). Weak ETags are the default when enabled. | `false` |
-| TemplateEngine | `func(raw string, bind interface{}) (string, error)` | You can specify a custom template function to render different template languages. See our [**Template Middleware**](middleware.md#template) _\*\*_for presets. | `nil` |
+| TemplateEngine | `func(raw string, bind interface{}) (string, error)` | You can specify a custom template function to render different template languages. See our [**Template Middleware**](middleware.md#template) \_\*\*\_for presets. | `nil` |
 | TemplateFolder | `string` | A directory for the application's views. If a directory is set, this will be the prefix for all template paths. `c.Render("home", data) -> ./views/home.pug` | `""` |
 | TemplateExtension | `string` | If you preset the template file extension, you do not need to provide the full filename in the Render function: `c.Render("home", data) -> home.pug` | `"html"` |
 | ReadTimeout | `time.Duration` | The amount of time allowed to read the full request including body. Default timeout is unlimited. | `nil` |
@@ -238,7 +238,7 @@ You can group routes by creating a `*Group` struct.
 app.Group(prefix string, handlers ...func(*Ctx)) *Group
 ```
 
-**Example**
+**示例**
 
 ```go
 func main() {
@@ -260,7 +260,7 @@ func main() {
 
 ## Listen
 
-Binds and listens for connections on the specified address. This can be a `int` for port or `string` for address.
+绑定和监听指定地址的连接。 可以是 `int` 类型（端口）或 `string` 类型（地址）。
 
 {% code title="Signature" %}
 ```go
@@ -277,7 +277,7 @@ app.Listen("127.0.0.1:8080")
 ```
 {% endcode %}
 
-To enable **TLS/HTTPS** you can append a [**TLS config**](https://golang.org/pkg/crypto/tls/#Config).
+要启用 **TLS/HTTPS** ，您可以添加一个 [**TLS 配置**](https://golang.org/pkg/crypto/tls/#Config)
 
 {% code title="Example" %}
 ```go
@@ -293,7 +293,7 @@ app.Listen(443, config)
 
 ## Serve
 
-You can pass your own [`net.Listener`](https://golang.org/pkg/net/#Listener) using the `Serve` method.
+您可以通过自己的 [`net.Listener`](https://golang.org/pkg/net/#Listener) 使用 `Serve` 方法。
 
 {% code title="Signature" %}
 ```go
@@ -302,7 +302,7 @@ app.Serve(ln net.Listener, tls ...*tls.Config) error
 {% endcode %}
 
 {% hint style="warning" %}
-**Serve** does not support the ****[**Prefork** ](application.md#settings)feature.
+**Serve** does not support the **\*\*\[**Prefork\*\* \]\(application.md\#settings\)feature.
 {% endhint %}
 
 {% code title="Example" %}
