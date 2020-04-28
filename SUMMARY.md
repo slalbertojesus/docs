@@ -1,6 +1,6 @@
 # Índice
 
-* [📖 Guia de Introdução](README.md)
+* [Guia de Introdução](README.md)
 * [🚀 Aplicação](application.md)
 * [🧠 Context](context.md)
 * [🧬 Middleware](middleware.md)
