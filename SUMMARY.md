@@ -1,6 +1,6 @@
 # Table of contents
 
-* [Primeros Pasos](README.md)
+* [📖 Getting started](README.md)
 * [🚀 Application](application.md)
 * [🧠 Context](context.md)
 * [🧬 Middleware](middleware.md)
@@ -13,5 +13,5 @@
 * [🍳 Examples](https://github.com/gofiber/recipes)
 * [📝 Github](https://github.com/gofiber/fiber)
 * [☕ Buy Coffee](https://www.buymeacoffee.com/fenny)
-* [💬 Telegram](https://t.me/gofiber)
+* [💬 Discord](https://gofiber.io/discord)
 
