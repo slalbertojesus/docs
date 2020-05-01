@@ -6,8 +6,8 @@ description: The app instance conventionally denotes the Fiber application.
 
 ## New
 
-This method creates a new **App** named instance.  
-You can pass optional [settings ](application.md#settings)when creating a new instance
+Cette méthode crée une nouvelle instance **App**.  
+Optionnellement, vous pouvez passer [settings](application.md#settings) lors de la création de la nouvelle instance
 
 {% code title="Signature" %}
 ```go
@@ -33,13 +33,13 @@ func main() {
 
 ## Settings
 
-You can pass application settings when calling `New`.
+Vous pouvez indiquer des options lorsque vous appelez `New`.
 
 {% code title="Example" %}
 ```go
 func main() {
     // Pass Settings creating a new instance
-    app := fiber.New(fiber.Settings{
+    app := fiber.New(&fiber.Settings{
         Prefork:       true,
         CaseSensitive: true,
         StrictRouting: true,
@@ -87,6 +87,8 @@ func main() {
 | DisableKeepalive          | `bool`                                               | Disable keep-alive connections, the server will close incoming connections after sending the first response to client                                                                                                                                     | `false`           |
 | DisableDefaultDate        | `bool`                                               | When set to true causes the default date header to be excluded from the response.                                                                                                                                                                         | `false`           |
 | DisableDefaultContentType | `bool`                                               | When set to true, causes the default Content-Type header to be excluded from the Response.                                                                                                                                                                | `false`           |
+| DisableStartupMessage     | `bool`                                               | When set to true, it will not print out the fiber ASCII and "listening" on message                                                                                                                                                                        | `false`           |
+| ETag                      | `bool`                                               | Enable or disable ETag header generation, since both weak and strong etags are generated using the same hashing method \(CRC-32\). Weak ETags are the default when enabled.                                                                             | `false`           |
 | TemplateEngine            | `func(raw string, bind interface{}) (string, error)` | You can specify a custom template function to render different template languages. See our [**Template Middleware**](middleware.md#template) _\*\*_for presets.                                                                                     | `nil`             |
 | TemplateFolder            | `string`                                             | A directory for the application's views. If a directory is set, this will be the prefix for all template paths. `c.Render("home", data) -> ./views/home.pug`                                                                                           | `""`              |
 | TemplateExtension         | `string`                                             | If you preset the template file extension, you do not need to provide the full filename in the Render function: `c.Render("home", data) -> home.pug`                                                                                                   | `"html"`          |
