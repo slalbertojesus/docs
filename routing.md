@@ -28,7 +28,7 @@ app.Get("/random.txt", func(c *fiber.Ctx) {
 })
 ```
 
-## Parameters
+## パラメータの表記
 
 Route parameters are **named URL segments** that are used to capture the values specified at their position in the URL. The captured values can be retrieved using the [Params](https://fiber.wiki/context#params) function, with the name of the route parameter specified in the path as their respective keys.
 
@@ -37,7 +37,7 @@ Name of the route parameter must be made up of **characters** \(`[A-Za-z0-9_]`\)
 {% endhint %}
 
 {% hint style="danger" %}
-The hyphen \(`-`\) are **not** interpreted literally yet. Planned for **Fiber** v1.10.
+The hyphen \(`-`\) are **not** interpreted literally yet. Planned for **Fiber** v1.11.
 {% endhint %}
 
 **Example of define routes with route parameters**
