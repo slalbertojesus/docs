@@ -1,16 +1,16 @@
 ---
 description: >-
-  The Ctx struct represents the Context which hold the HTTP request and response. It has methods for the request query string, parameters, body, HTTP headers and so on.
+  Struct Ctx reprezentuje Context, który przechowywuje zapytania i odpowiedzi HTTP. Ma metody pozwalające na dostęp do query stringów zapytania, parametrów, body, nagłówków HTTP itp.
 ---
 
 # 🧠 Context
 
 ## Accepts
 
-Checks, if the specified **extensions** or **content** **types** are acceptable.
+Sprawdza, czy określone **rozszerzenie** lub **typ** **treści** jest dozwolony.
 
 {% hint style="info" %}
-Based on the request’s [Accept](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept) HTTP header.
+Oparte o nagłówek HTTP [Accept](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept) zapytania.
 {% endhint %}
 
 {% code title="Signature" %}
@@ -37,7 +37,7 @@ app.Get("/", func(c *fiber.Ctx) {
 ```
 {% endcode %}
 
-Fiber provides similar functions for the other accept headers.
+Fiber ma podobne funkcje dla innych accept-headerów.
 
 ```go
 // Accept-Charset: utf-8, iso-8859-1;q=0.2
@@ -148,7 +148,7 @@ app.Post("/", func(c *fiber.Ctx) {
 
 ## BodyParser
 
-Binds the request body to a struct. `BodyParser` supports decoding query parameters and the following content types based on the `Content-Type` header:
+Binduje body zapytania do structa. `BodyParser` wspiera dekodowanie parametrów zapytania i odpowiedniego typu zawartości bazując na nagłówku `Content-Type`:
 
 * `application/json`
 * `application/xml`
@@ -195,7 +195,7 @@ app.Post("/", func(c *fiber.Ctx) {
 
 ## ClearCookie
 
-Expire a client cookie \(_or all cookies if left empty\)_
+Przedawnia dane cookie klienta \(_lub wszystkie cookie, jeżeli pozostawione bez argumentów_\)
 
 {% code title="Signature" %}
 ```go
@@ -220,7 +220,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Cookie
 
-Set cookie
+Ustaw cookie
 
 **Signature**
 
@@ -258,7 +258,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Cookies
 
-Get cookie value by key.
+Uzyskaj wartość cookie za pomocą klucza.
 
 **Signature**s
 
@@ -281,7 +281,7 @@ Transfers the file from path as an `attachment`.
 
 Typically, browsers will prompt the user for download. By default, the [Content-Disposition](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition) header `filename=` parameter is the filepath \(_this typically appears in the browser dialog_\).
 
-Override this default with the **filename** parameter.
+Zastąp ten domyślny parametr z **nazwą pliku**.
 
 {% code title="Signature" %}
 ```go
@@ -303,15 +303,15 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Fasthttp
 
-You can still **access** and use all **Fasthttp** methods and properties.
+Nadal masz **dostęp** do wszystkich metod i właściwości **Fasthttp**.
 
 **Signature**
 
 {% hint style="info" %}
-Please read the [Fasthttp Documentation](https://pkg.go.dev/github.com/valyala/fasthttp?tab=doc) for more information.
+Aby uzyskać więcej informacji, sprawdź [dokumentację Fasthttp](https://pkg.go.dev/github.com/valyala/fasthttp?tab=doc).
 {% endhint %}
 
-**Example**
+**Przykład**
 
 ```go
 app.Get("/", func(c *fiber.Ctx) {
@@ -366,7 +366,7 @@ func main() {
 Performs content-negotiation on the [Accept](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept) HTTP header. It uses [Accepts](context.md#accepts) to select a proper format.
 
 {% hint style="info" %}
-If the header is **not** specified or there is **no** proper format, **text/plain** is used.
+Jeśli nagłówek **nie** jest określony lub jest w **niepoprawnym** formacie, używany jest **text/plain**.
 {% endhint %}
 
 {% code title="Signature" %}
@@ -395,7 +395,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## FormFile
 
-MultipartForm files can be retrieved by name, the **first** file from the given key is returned.
+Załączniki MultipartForm mogą być wyciągane po nazwie, zwracany jest **pierwszy** plik pod podanym kluczem.
 
 {% code title="Signature" %}
 ```go
@@ -420,7 +420,7 @@ app.Post("/", func(c *fiber.Ctx) {
 
 ## FormValue
 
-Any form values can be retrieved by name, the **first** value from the given key is returned.
+Dostęp do wszystkich wartości w Form można uzyskać za pomocą ich nazwy, zwracana jest **pierwsza** wartość pod podanym kluczem.
 
 {% code title="Signature" %}
 ```go
@@ -443,15 +443,15 @@ app.Post("/", func(c *fiber.Ctx) {
 [https://expressjs.com/en/4x/api.html\#req.fresh](https://expressjs.com/en/4x/api.html#req.fresh)
 
 {% hint style="info" %}
-Not implemented yet, pull requests are welcome!
+Jeszcze nie zostało zaimplementowane, pull requesty są mile widziane!
 {% endhint %}
 
 ## Get
 
-Returns the HTTP request header specified by field.
+Zwraca nagłówek HTTP żądania określony przez pole.
 
 {% hint style="success" %}
-The match is **case-insensitive**.
+Matchowanie jest **case-insensitive**.
 {% endhint %}
 
 {% code title="Signature" %}
@@ -472,7 +472,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Hostname
 
-Contains the hostname derived from the [Host](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host) HTTP header.
+Zawiera hostname wzięty z nagłówka HTTP [Host](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host).
 
 {% code title="Signature" %}
 ```go
@@ -492,7 +492,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## IP
 
-Returns the remote IP address of the request.
+Zwraca adres IP, z którego nadchodzi żądanie.
 
 {% code title="Signature" %}
 ```go
@@ -707,11 +707,12 @@ app.Post("/", func(c *fiber.Ctx) {
 
 ## Method
 
-Contains a string corresponding to the HTTP method of the request: `GET`, `POST`, `PUT` and so on.
+Contains a string corresponding to the HTTP method of the request: `GET`, `POST`, `PUT` and so on.  
+Optionally, you could override the method by passing a string.
 
 {% code title="Signature" %}
 ```go
-c.Method() string
+c.Method(override ...string) string
 ```
 {% endcode %}
 
@@ -764,7 +765,7 @@ app.Post("/", func(c *fiber.Ctx) {
 
 ## Next
 
-When **Next** is called, it executes the next method in the stack that matches the current route. You can pass an error struct within the method for custom error handling.
+Kiedy **Next** jest wyzwalane, uruchamiana jest następna metoda w stacku, odpowiadająca bieżącemu route. Możesz przekazać struct błędu w funkcji dla customowej obsługi błędów.
 
 {% code title="Signature" %}
 ```go
@@ -794,7 +795,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## OriginalURL
 
-Contains the original request URL.
+Zawiera oryginalny adres URL żądania.
 
 {% code title="Signature" %}
 ```go
@@ -814,10 +815,10 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Params
 
-Method can be used to get the route parameters.
+Metoda może być użyta do uzyskania parametrów route.
 
 {% hint style="info" %}
-Defaults to empty string \(`""`\), if the param **doesn't** exist.
+Domyślnie przyjmuje za wartość pusty string \(`""`\), jeżeli parametr **nie** istnieje.
 {% endhint %}
 
 {% code title="Signature" %}
@@ -838,11 +839,11 @@ app.Get("/user/:name", func(c *fiber.Ctx) {
 
 ## Path
 
-Contains the path part of the request URL.
+Contains the path part of the request URL. Optionally, you could override the path by passing a string.
 
 {% code title="Signature" %}
 ```go
-c.Path() string
+c.Path(override ...string) string
 ```
 {% endcode %}
 
@@ -1163,7 +1164,7 @@ app.Get("/", func(c *fiber.Ctx) {
 [https://expressjs.com/en/4x/api.html\#req.fresh](https://expressjs.com/en/4x/api.html#req.fresh)
 
 {% hint style="info" %}
-Not implemented yet, pull requests are welcome!
+Jeszcze nie zostało zaimplementowane, pull requesty są mile widziane!
 {% endhint %}
 
 ## Status
@@ -1213,7 +1214,7 @@ app.Get("/", func(c *fiber.Ctx) {
 ```
 {% endcode %}
 
-## Type
+## Typ
 
 Sets the [Content-Type](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Type) HTTP header to the MIME type listed [here](https://github.com/nginx/nginx/blob/master/conf/mime.types) specified by the file **extension**.
 
