@@ -23,13 +23,13 @@ basicauth.New(config ...Config) func(*fiber.Ctx)
 
 **Конфигурация**
 
-| Свойство     | Тип                         | Описание                                                                          | По умолчанию |
-|:------------ |:--------------------------- |:--------------------------------------------------------------------------------- |:------------ |
-| Filter       | `func(*fiber.Ctx) bool`     | Определяет функцию для пропуска (skip) middleware                                 | `nil`        |
-| Users        | `map[string][string]`       | Определяет допустимые учетные данные                                              | `nil`        |
-| Realm        | `string`                    | Realm — это строка для определения атрибута области                               | `Restricted` |
-| Authorizer   | `func(string, string) bool` | Функция, которую вы можете передать для проверки учетных данных, если необходимо. | `nil`        |
-| Unauthorized | `func(*fiber.Ctx)`          | Пользовательское тело ответа для несанкционированных ответов                      | `nil`        |
+| Свойство     | Тип                         | Описание                                                                          | По умолчанию   |
+|:------------ |:--------------------------- |:--------------------------------------------------------------------------------- |:-------------- |
+| Filter       | `func(*fiber.Ctx) bool`     | Определяет функцию для пропуска (skip) middleware                                 | `nil`          |
+| Users        | `map[string][string]`       | Определяет допустимые учетные данные                                              | `nil`          |
+| Realm        | `string`                    | Realm — это строка для определения атрибута области                               | `"Restricted"` |
+| Authorizer   | `func(string, string) bool` | Функция, которую вы можете передать для проверки учетных данных, если необходимо. | `nil`          |
+| Unauthorized | `func(*fiber.Ctx)`          | Пользовательское тело ответа для несанкционированных ответов                      | `nil`          |
 
 **Пример**
 
@@ -135,7 +135,7 @@ compression.New(config ...Config) func(*fiber.Ctx)
 ```go
 package main
 
-import 
+import (
   "github.com/gofiber/fiber"
   "github.com/gofiber/compression"
 )
@@ -228,12 +228,12 @@ logger.new(config ...Config) func(*Ctx)
 
 **Конфигурация**
 
-| Свойство   | Тип                     | Описание                                                                                                                                                    | По умолчанию                                       |
-|:---------- |:----------------------- |:----------------------------------------------------------------------------------------------------------------------------------------------------------- |:-------------------------------------------------- |
-| Filter     | `func(*fiber.Ctx) bool` | Определяет функцию для пропуска (skip) middleware                                                                                                           | `nil`                                              |
-| Format     | `string`                | Возможные значения: `time, ip, url, host, method, path, protocol, referer, ua, header:<key>, query:<key>, form:<key>, cookie:<key>` | `"${time} - ${ip} - ${method} ${path}\t${ua}\n"` |
-| TimeFormat | `string`                | Подробнее про TimeFormat: [читайте тут](https://programming.guide/go/format-parse-string-time-date-example.html)                                            | `15:04:05`                                         |
-| Output     | `io.Writer`             | Это writer, в который записываются логи                                                                                                                     | `os.Stderr`                                        |
+| Свойство   | Тип                     | Описание                                                                                                                                                                                     | По умолчанию                                       |
+|:---------- |:----------------------- |:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:-------------------------------------------------- |
+| Filter     | `func(*fiber.Ctx) bool` | Определяет функцию для пропуска (skip) middleware                                                                                                                                            | `nil`                                              |
+| Format     | `string`                | Возможные значения: `time, ip, url, host, method, path, route, protocol, referer, ua, bytesSent, bytesReceived, header:<key>, query:<key>, form:<key>, cookie:<key>` | `"${time} - ${ip} - ${method} ${path}\t${ua}\n"` |
+| TimeFormat | `string`                | Подробнее про TimeFormat: [читайте тут](https://programming.guide/go/format-parse-string-time-date-example.html)                                                                             | `15:04:05`                                         |
+| Output     | `io.Writer`             | Это writer, в который записываются логи                                                                                                                                                      | `os.Stderr`                                        |
 
 **Пример**
 
@@ -305,9 +305,71 @@ func main() {
 }
 ```
 
+## Session
+
+Session middleware – это реализация сессии; функция, которая позволяет Fiber поддерживать идентичность пользователя и хранить данные о пользователе во время нескольких взаимодействий запросов/ответа между браузером и Fiber. По умолчанию, middleware использует провайдер `memory` в качестве ключ-значения в хранилище сессии (key:value store). Однако, мы обеспечиваем поддержку дополнительных провайдеров сессий, таких как memcache, MySQL, Postgres, Redis и SQLite3.
+
+**Установка**
+
+```bash
+go get -u github.com/gofiber/session
+```
+
+**Signature**
+
+```go
+session.New(config ...session.Config) *Session
+```
+
+**Конфигурация**
+
+| Свойство   | Тип             | Описание                                                                                                                                                              | По умолчанию          |
+|:---------- |:--------------- |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:--------------------- |
+| Lookup     | `string`        | Где искать идентификатор сессии `<source>:<name>`, возможные значения: `cookie:key`, `header:key` или `query:key`                                         | `"cookie:session_id"` |
+| Domain     | `string`        | Cookie domain                                                                                                                                                         | `""`                  |
+| Expiration | `time.Duration` | Время истечения сессии, возможные значения: `0`, т.е. не истекает (24 года); `-1` истикает при закрытии браузера; `>0` — это time.Duration действия cookie сессии. | `12 * time.Hour`      |
+| Secure     | `bool`          | Если куки должны быть отправлены только по HTTPS                                                                                                                      | `false`               |
+| Provider   | `Provider`      | Содержит интерфейс провайдера                                                                                                                                         | `memory.Provider`     |
+| Generator  | `func() []byte` | Генератор — это функция, которая генерирует уникальный id                                                                                                             | `uuid`                |
+| GCInterval | `time.Duration` | Интервал для сборщика мусора                                                                                                                                          | `uuid`                |
+
+**Пример**
+
+```go
+package main
+
+import (
+  "fmt"
+
+  "github.com/gofiber/fiber"
+  "github.com/gofiber/session"
+)
+
+func main() {
+  app := fiber.New()
+
+  // create session handler
+  sessions := session.New()
+
+  app.Get("/", func(c *fiber.Ctx) {
+    store := sessions.Get(c)    // get/create new session
+    defer store.Save()
+
+    store.ID()                   // returns session id
+    store.Destroy()              // delete storage + cookie
+    store.Get("john")            // get from storage
+    store.Regenerate()           // generate new session id
+    store.Delete("john")         // delete from storage
+    store.Set("john", "doe")     // save to storage
+  })
+
+  app.Listen(3000)
+}
+```
+
 ## Template
 
-По умолчанию, Fiber поставляется с движком [**стандартного HTML шаблона**](https://golang.org/pkg/html/template/), но этот middleware содержит движки отрисовки сторонних производителей.
+Этот пакет middleware содержит `8 движков шаблонизации`, которые можно использовать с [Fiber v1.10.0](https://github.com/gofiber/fiber) с использованием версии Go `1.13` или выше.
 
 **Установка**
 
@@ -318,17 +380,21 @@ go get -u github.com/gofiber/template
 **Signature**
 
 ```go
-template.Engine() func(raw string, bind interface{}) (out string, err error)
+<engine>.New(directory, extension string, funcmap ...map[string]interface{}) *Engine
 ```
 
 **Шаблонизаторы**
 
-| Ключевое слово | Движок                                                               |
-|:-------------- |:-------------------------------------------------------------------- |
-| `Amber()`      | [github.com/eknkc/amber](https://github.com/eknkc/amber)             |
-| `Handlebars()` | [github.com/aymerick/raymond](https://github.com/aymerick/raymond)   |
-| `Mustache()`   | [github.com/cbroglie/mustache](https://github.com/cbroglie/mustache) |
-| `Pug()`        | [github.com/Joker/jade](https://github.com/Joker/jade)               |
+| Движки       | Репозиторий                                                                    |
+|:------------ |:------------------------------------------------------------------------------ |
+| `ace`        | [https://github.com/yosssi/ace](https://github.com/yosssi/ace)                 |
+| `amber`      | [https://github.com/eknkc/amber](https://github.com/eknkc/amber)               |
+| `django`     | [https://github.com/flosch/pongo2](https://github.com/flosch/pongo2)           |
+| `handlebars` | [https://github.com/aymerick/raymond](https://github.com/aymerick/raymond)     |
+| `jet`        | [https://github.com/CloudyKit/jet](https://github.com/CloudyKit/jet)           |
+| `mustache`   | [https://github.com/cbroglie/mustache](https://github.com/cbroglie/mustache)   |
+| `pug`        | [https://github.com/Joker/jade](https://github.com/Joker/jade)                 |
+| `html`       | [https://golang.org/pkg/html/template/](https://golang.org/pkg/html/template/) |
 
 **Пример**
 
@@ -336,32 +402,37 @@ template.Engine() func(raw string, bind interface{}) (out string, err error)
 package main
 
 import (
-  "github.com/gofiber/fiber"
-  "github.com/gofiber/template"
+    "github.com/gofiber/fiber"
+
+    // "github.com/gofiber/template/ace"
+    // "github.com/gofiber/template/amber"
+    // "github.com/gofiber/template/django"
+    // "github.com/gofiber/template/handlebars"
+  // "github.com/gofiber/template/jet"
+    // "github.com/gofiber/template/mustache"
+    // "github.com/gofiber/template/pug"
+    "github.com/gofiber/template/html"
 )
 
 func main() {
-  app := fiber.New()
+    app := fiber.New()
 
-  app.Settings.TemplateEngine = template.Mustache()
-  // app.Settings.TemplateEngine = template.Amber()
-  // app.Settings.TemplateEngine = template.Handlebars()
-  // app.Settings.TemplateEngine = template.Pug()
+    // app.Settings.Templates = ace.New("./views", ".ace")
+    // app.Settings.Templates = amber.New("./views", ".amber")
+    // app.Settings.Templates = django.New("./views", ".django")
+    // app.Settings.Templates = handlebars.New("./views", ".hbs")
+  // app.Settings.Templates = jet.New("./views", ".jet")
+    // app.Settings.Templates = mustache.New("./views", ".mustache")
+    // app.Settings.Templates = pug.New("./views", ".pug")
+    app.Settings.Templates = html.New("./views", ".html")
 
-  app.Get("/", func(c *fiber.Ctx) {
-    bind := fiber.Map{
-      "name": "John",
-      "age":  35,
-    }
-    if err := c.Render("./views/index.mustache", bind); err != nil {
-      c.Status(500).Send(err.Error())
-    }
-    // <html><head><title>Template Demo</title></head>
-    // <body>Hi, my name is John and im 35 years old
-    // </body></html>
-  })
+    app.Get("/", func(c *fiber.Ctx) {
+        c.Render("index", fiber.Map{
+            "Title": "Hello, World!",
+        })
+    })
 
-  app.Listen(3000)
+    app.Listen(3000)
 }
 ```
 
@@ -387,7 +458,7 @@ websocket.New(handler func(*Conn), config ...Config) func(*Ctx)
 |:----------------- |:--------------- |:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:--------------- |
 | HandshakeTimeout  | `time.Duration` | Определяет продолжительность handshake.                                                                                                                                                                               | `0`             |
 | Subprotocols      | `[]string`      | Определяет протоколы, поддерживаемые сервером в порядке предпочтений. Если это поле не пустое, то метод Upgrade согласовывает подпротокол, выбрав первое совпадение в этом списке с протоколом, запрошенным клиентом. | `nil`           |
-| Origins           | `[]string`      | Это фрагмент строк, которые являются приемлемыми. По умолчанию разрешены все исходные строки.                                                                                                                         | `[]string{"*"}` |
+| Origins           | `[]string`      | Origins — это фрагмент строк, которые являются приемлемыми. По умолчанию допускаются все исходные тексты.                                                                                                             | `[]string{"*"}` |
 | ReadBufferSize    | `int`           | ReadBufferSize задает размер буфера ввода-вывода (I/O) для чтения в байтах.                                                                                                                                           | `1024`          |
 | WriteBufferSize   | `int`           | WriteBufferSize задает размер буфера ввода-вывода (I/O) для записи в байтах.                                                                                                                                          | `1024`          |
 | EnableCompression | `bool`          | Включите, если сервер должен попытаться сообщить о сжатии сообщений \(RFC 7692\)                                                                                                                                    | `false`         |
@@ -397,7 +468,7 @@ websocket.New(handler func(*Conn), config ...Config) func(*Ctx)
 ```go
 package main
 
-import 
+import (
   "github.com/gofiber/fiber"
   "github.com/gofiber/websocket"
 )
@@ -445,15 +516,15 @@ go get -u github.com/gofiber/requestid
 **Signature**
 
 ```go
-requestid.New(config ...Config) func(*Ctx)
+go get -u github.com/gofiber/requestid
 ```
 
 **Конфигурация**
 
-| Свойство  | Тип                       | Описание                                          | По умолчанию                |
-|:--------- |:------------------------- |:------------------------------------------------- |:--------------------------- |
-| Filter    | `func(*fiber.Ctx) bool`   | Определяет функцию для пропуска (skip) middleware | `nil`                       |
-| Generator | `func(*fiber.Ctx) string` | Определяет функцию для генерации ID.              | `return uid.New().String()` |
+| Свойство  | Тип                       | Описание                                          | По умолчанию                 |
+|:--------- |:------------------------- |:------------------------------------------------- |:---------------------------- |
+| Filter    | `func(*fiber.Ctx) bool`   | Определяет функцию для пропуска (skip) middleware | `nil`                        |
+| Generator | `func(*fiber.Ctx) string` | Определяет функцию для генерации ID.              | `return uuid.New().String()` |
 
 **Пример**
 
@@ -496,18 +567,18 @@ helmet.New(config ...Config) func(*Ctx)
 
 **Конфигурация**
 
-| Свойство              | Тип                     | Описание                                                                                                                                                                                                                                                                                                          | По умолчанию     |
-|:--------------------- |:----------------------- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:---------------- |
-| Filter                | `func(*fiber.Ctx) bool` | Определяет функцию для пропуска (skip) middleware                                                                                                                                                                                                                                                                 | `nil`            |
-| XSSProtection         | `string`                | Обеспечивает защиту от атаки на межсайтовый скриптинг \(XSS\) путем установки заголовка `X-XSS-Protection`.                                                                                                                                                                                                     | `1; mode=block"` |
-| ContentTypeNosniff    | `string`                | Обеспечивает защиту от переопределения заголовка Content-Type путем установки заголовка `X-Content-Type-Options`.                                                                                                                                                                                                 | `"nosniff"`      |
-| XFrameOptions         | `string`                | Может использоваться для указания того, должен ли браузер отображать страницу в iframe или нет. Сайты могут использовать это для того, чтобы избежать clickjacking, когда их содержимое было встроено в другие сайты. Обеспечивает защиту от clickjacking. Возможные значения: `SAMEORIGIN, DENY, ALLOW-FROM uri` | `"SAMEORIGIN"`   |
-| HSTSMaxAge            | `int`                   | Устанавливает заголовок `Strict-Transport-Security`, указывающий, сколько времени \(в секундах\) браузеры должны помнить, что этот сайт доступен только через HTTPS. Это уменьшает вашу подверженность некоторым атакам SSL-stripping man-in-the-middle \(MITM\).                                             | \`\`         |
-| HSTSExcludeSubdomains | `bool`                  | Не содержат тег субдоменов в заголовке `Strict Transport Security`, исключая все субдомены из политики безопасности. Не имеет эффекта, если у HSTSMaxAge не задано нулевое значение.                                                                                                                              | \`\`         |
-| ContentSecurityPolicy | `string`                | Устанавливает заголовок `Content-Security-Policy`, обеспечивающий безопасность от межсайтовых скриптов \(XSS\), clickjacking и другие атаки на инъекции кода в результате выполнения вредоносного содержимого в контекст доверенных веб-страниц                                                                 | \`\`         |
-| CSPReportOnly         | `bool`                  |                                                                                                                                                                                                                                                                                                                   | \`\`         |
-| HSTSPreloadEnabled    | `bool`                  |                                                                                                                                                                                                                                                                                                                   | \`\`         |
-| ReferrerPolicy        | `string`                |                                                                                                                                                                                                                                                                                                                   | \`\`         |
+| Свойство              | Тип                     | Описание                                                                                                                                                                                                                                                                                                                           | По умолчанию      |
+|:--------------------- |:----------------------- |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:----------------- |
+| Filter                | `func(*fiber.Ctx) bool` | Определяет функцию для пропуска (skip) middleware                                                                                                                                                                                                                                                                                  | `nil`             |
+| XSSProtection         | `string`                | Обеспечивает защиту от атаки на межсайтовый скриптинг \(XSS\) путем установки заголовка `X-XSS-Protection`.                                                                                                                                                                                                                      | `"1; mode=block"` |
+| ContentTypeNosniff    | `string`                | Обеспечивает защиту от переопределения заголовка Content-Type путем установки заголовка `X-Content-Type-Options`.                                                                                                                                                                                                                  | `"nosniff"`       |
+| XFrameOptions         | `string`                | Может использоваться для указания того, должен ли браузер отображать страницу во `frame`, `iframe` или `object`. Сайты могут использовать это для того, чтобы избежать clickjacking, когда их содержимое было встроено в другие сайты. Обеспечивает защиту от clickjacking. Возможные значения: `SAMEORIGIN, DENY, ALLOW-FROM uri` | `"SAMEORIGIN"`    |
+| HSTSMaxAge            | `int`                   | HSTSMaxAge устанавливает заголовок `Strict-Transport-Security`, указывающий, сколько времени браузеры \(в секундах\) должны помнить, что этот сайт доступен только через HTTPS. Это уменьшает вашу подверженность некоторым атакам SSL-stripping man-in-the-middle \(MITM\).                                                   | `0`               |
+| HSTSExcludeSubdomains | `bool`                  | HSTSExcludeSubdomains не содержат тег субдоменов в заголовке `Strict Transport Security`, исключая все субдомены из политики безопасности. Не имеет эффекта, если у HSTSMaxAge не задано нулевое значение.                                                                                                                         | `false`           |
+| ContentSecurityPolicy | `string`                | Устанавливает заголовок `Content-Security-Policy`, обеспечивающий безопасность от межсайтовых скриптов \(XSS\), clickjacking и другие атаки на инъекции кода в результате выполнения вредоносного содержимого в контексте доверенных веб-страниц                                                                                 | `""`              |
+| CSPReportOnly         | `bool`                  |                                                                                                                                                                                                                                                                                                                                    | `false`           |
+| HSTSPreloadEnabled    | `bool`                  |                                                                                                                                                                                                                                                                                                                                    | `false`           |
+| ReferrerPolicy        | `string`                |                                                                                                                                                                                                                                                                                                                                    | `""`              |
 
 **Пример**
 
@@ -535,9 +606,9 @@ func main() {
 
 ## Redirect
 
-Redirects middleware обеспечивает HTTP-переадресацию на URL, полученную по указанному пути, с указанным статусом, положительным целым числом, которое соответствует коду HTTP-статуса.
+Redirect middleware обеспечивает HTTP-переадресацию на URL, полученную по указанному пути, с указанным статусом, положительным целым числом, которое соответствует коду HTTP-статуса.
 
-**Установка**
+**Installation**
 
 ```bash
 go get -u github.com/gofiber/redirect
