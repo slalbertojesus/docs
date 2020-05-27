@@ -23,13 +23,13 @@ basicauth.New(config ...Config) func(*fiber.Ctx)
 
 **配置**
 
-| 属性           | 类型                          | 说明                | 默认           |
-|:------------ |:--------------------------- |:----------------- |:------------ |
-| Filter       | `func(*fiber.Ctx) bool`     | 定义跳过中间件的函数        | `nil`        |
-| Users        | `map[string][string]`       | 用户定义允许的凭据         | `nil`        |
-| Realm        | `string`                    | Realm 是定义领域属性的字符串 | `Restricted` |
-| Authorizer   | `func(string, string) bool` | 一个用以检查凭据的自定义函数    | `nil`        |
-| Unauthorized | `func(*fiber.Ctx)`          | 未经授权响应的自定义响应体     | `nil`        |
+| 属性           | 类型                          | 说明                | 默认             |
+|:------------ |:--------------------------- |:----------------- |:-------------- |
+| Filter       | `func(*fiber.Ctx) bool`     | 定义跳过中间件的函数        | `nil`          |
+| Users        | `map[string][string]`       | 用户定义允许的凭据         | `nil`          |
+| Realm        | `string`                    | Realm 是定义领域属性的字符串 | `"Restricted"` |
+| Authorizer   | `func(string, string) bool` | 一个用以检查凭据的自定义函数    | `nil`          |
+| Unauthorized | `func(*fiber.Ctx)`          | 未经授权响应的自定义响应体     | `nil`          |
 
 **示例**
 
@@ -135,7 +135,7 @@ compression.New(config ...Config) func(*fiber.Ctx)
 ```go
 package main
 
-import 
+import (
   "github.com/gofiber/fiber"
   "github.com/gofiber/compression"
 )
@@ -228,12 +228,12 @@ logger.new(config ...Config) func(*Ctx)
 
 **配置**
 
-| 属性         | 类型                      | 说明                                                                                                                                                    | 默认                                                 |
-|:---------- |:----------------------- |:----------------------------------------------------------------------------------------------------------------------------------------------------- |:-------------------------------------------------- |
-| Filter     | `func(*fiber.Ctx) bool` | 定义跳过中间件的函数                                                                                                                                            | `nil`                                              |
-| Format     | `string`                | 定义日志输出格式。可用的值： `time, ip, url, host, method, path, protocol, referer, ua, header:<key>, quer:<key>, form:<key>, cookie:<key>` | `"${time} - ${ip} - ${method} ${path}\t${ua}\n"` |
-| TimeFormat | `string`                | 时间格式 [在这里阅读更多](https://programming.guide/go/format-parse-string-time-date-example.html)                                                               | `15:04:05`                                         |
-| Output     | `io.Writer`             | 写入日志的 writter                                                                                                                                         | `os.Stderr`                                        |
+| 属性         | 类型                      | 说明                                                                                                                                                                                        | 默认                                                 |
+|:---------- |:----------------------- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:-------------------------------------------------- |
+| Filter     | `func(*fiber.Ctx) bool` | 定义跳过中间件的函数                                                                                                                                                                                | `nil`                                              |
+| Format     | `string`                | Possible values: `time, ip, url, host, method, path, route, protocol, referer, ua, bytesSent, bytesReceived, header:<key>, query:<key>, form:<key>, cookie:<key>` | `"${time} - ${ip} - ${method} ${path}\t${ua}\n"` |
+| TimeFormat | `string`                | 时间格式 [在这里阅读更多](https://programming.guide/go/format-parse-string-time-date-example.html)                                                                                                   | `15:04:05`                                         |
+| Output     | `io.Writer`             | 写入日志的 writter                                                                                                                                                                             | `os.Stderr`                                        |
 
 **示例**
 
@@ -305,11 +305,73 @@ func main() {
 }
 ```
 
-## Template
+## Session
 
-默认情况下，Fiber 有 [**默认的 HTML 模版**](https://golang.org/pkg/html/template/) 引擎，但这个中间件包含第三方渲染引擎。
+Session 中间件是 session 的 go 实现，该中间件可以让 Fiber 维护用户的 ID 信息，并且存储与之相关的数据，session 主要用于浏览器请求场景。 中间件默认使用 `memory` provider 来存储 session 信息，此外，我们还提供了 memcache、MySQL、Postgres、Redis 和 SQLite3 等这些 provider 作为候选方案。
 
 **Installation**
+
+```bash
+go get -u github.com/gofiber/session
+```
+
+**Signature**
+
+```go
+session.New(config ...session.Config) *Session
+```
+
+**配置**
+
+| 属性         | 类型              | 说明                                                                                   | 默认                    |
+|:---------- |:--------------- |:------------------------------------------------------------------------------------ |:--------------------- |
+| Lookup     | `string`        | 获取 session id 的方式，可以使用的值有：`cookie:key`、`header:key` 或 `query:key`                    | `"cookie:session_id"` |
+| Domain     | `string`        | session id 一般通过 cookie 设置，该字段用于设置 cookie 的 domain 属性                                 | `""`                  |
+| Expiration | `time.Duration` | 会话过期时间，可能的值： `0` 表示没有到期\(24年\)， `-1` 表示当浏览器关闭时， `>0` 表示会话过期的时间 （time.Duration）。 | `12 * time.Hour`      |
+| Secure     | `bool`          | 设置 cookie 的 secure 属性，是否只在 HTTPS 环境下发送                                               | `false`               |
+| Provider   | `Provider`      | 传入要使用的 provider                                                                      | `memory.Provider`     |
+| Generator  | `func() []byte` | 定义 session id 生成器                                                                    | `uuid`                |
+| GCInterval | `time.Duration` | 定义 GC（垃圾回收）周期                                                                        | `uuid`                |
+
+**示例**
+
+```go
+package main
+
+import (
+  "fmt"
+
+  "github.com/gofiber/fiber"
+  "github.com/gofiber/session"
+)
+
+func main() {
+  app := fiber.New()
+
+  // 创建 session 处理函数
+  sessions := session.New()
+
+  app.Get("/", func(c *fiber.Ctx) {
+    store := sessions.Get(c)    // 获取/新建一个 session
+    defer store.Save()
+
+    store.ID()                   // 返回 session id
+    store.Destroy()              // 销毁 session，包括其关联的数据和 cookie
+    store.Get("john")            // 从 session 中读取数据
+    store.Regenerate()           // 新生成一个 session id
+    store.Delete("john")         // 将数据从 session 中删除
+    store.Set("john", "doe")     // 设置数据
+  })
+
+  app.Listen(3000)
+}
+```
+
+## Template
+
+This middleware package contains `8 template engines` that can be used with [Fiber v1.10.0](https://github.com/gofiber/fiber) using Go version `1.13` or higher is required.
+
+**安装**
 
 ```bash
 go get -u github.com/gofiber/template
@@ -318,17 +380,21 @@ go get -u github.com/gofiber/template
 **Signature**
 
 ```go
-template.Engine() func(raw string, bind interface{}) (out string, err error)
+<engine>.New(directory, extension string, funcmap ...map[string]interface{}) *Engine
 ```
 
 **模板引擎**
 
-| 关键词            | 引擎                                                                   |
-|:-------------- |:-------------------------------------------------------------------- |
-| `Amber()`      | [github.com/eknkc/amber](https://github.com/eknkc/amber)             |
-| `Handlebars()` | [github.com/aymerick/raymond](https://github.com/aymerick/raymond)   |
-| `Mustache()`   | [github.com/cbroglie/mustache](https://github.com/cbroglie/mustache) |
-| `Pug()`        | [github.com/Joker/jade](https://github.com/Joker/jade)               |
+| Engines      | Repo                                                                           |
+|:------------ |:------------------------------------------------------------------------------ |
+| `ace`        | [https://github.com/yosssi/ace](https://github.com/yosssi/ace)                 |
+| `amber`      | [https://github.com/eknkc/amber](https://github.com/eknkc/amber)               |
+| `django`     | [https://github.com/flosch/pongo2](https://github.com/flosch/pongo2)           |
+| `handlebars` | [https://github.com/aymerick/raymond](https://github.com/aymerick/raymond)     |
+| `jet`        | [https://github.com/CloudyKit/jet](https://github.com/CloudyKit/jet)           |
+| `mustache`   | [https://github.com/cbroglie/mustache](https://github.com/cbroglie/mustache)   |
+| `pug`        | [https://github.com/Joker/jade](https://github.com/Joker/jade)                 |
+| `html`       | [https://golang.org/pkg/html/template/](https://golang.org/pkg/html/template/) |
 
 **示例**
 
@@ -336,38 +402,43 @@ template.Engine() func(raw string, bind interface{}) (out string, err error)
 package main
 
 import (
-  "github.com/gofiber/fiber"
-  "github.com/gofiber/template"
+    "github.com/gofiber/fiber"
+
+    // "github.com/gofiber/template/ace"
+    // "github.com/gofiber/template/amber"
+    // "github.com/gofiber/template/django"
+    // "github.com/gofiber/template/handlebars"
+  // "github.com/gofiber/template/jet"
+    // "github.com/gofiber/template/mustache"
+    // "github.com/gofiber/template/pug"
+    "github.com/gofiber/template/html"
 )
 
 func main() {
-  app := fiber.New()
+    app := fiber.New()
 
-  app.Settings.TemplateEngine = template.Mustache()
-  // app.Settings.TemplateEngine = template.Amber()
-  // app.Settings.TemplateEngine = template.Handlebars()
-  // app.Settings.TemplateEngine = template.Pug()
+    // app.Settings.Templates = ace.New("./views", ".ace")
+    // app.Settings.Templates = amber.New("./views", ".amber")
+    // app.Settings.Templates = django.New("./views", ".django")
+    // app.Settings.Templates = handlebars.New("./views", ".hbs")
+  // app.Settings.Templates = jet.New("./views", ".jet")
+    // app.Settings.Templates = mustache.New("./views", ".mustache")
+    // app.Settings.Templates = pug.New("./views", ".pug")
+    app.Settings.Templates = html.New("./views", ".html")
 
-  app.Get("/", func(c *fiber.Ctx) {
-    bind := fiber.Map{
-      "name": "John",
-      "age":  35,
-    }
-    if err := c.Render("./views/index.mustache", bind); err != nil {
-      c.Status(500).Send(err.Error())
-    }
-    // <html><head><title>Template Demo</title></head>
-    // <body>Hi, my name is John and im 35 years old
-    // </body></html>
-  })
+    app.Get("/", func(c *fiber.Ctx) {
+        c.Render("index", fiber.Map{
+            "Title": "Hello, World!",
+        })
+    })
 
-  app.Listen(3000)
+    app.Listen(3000)
 }
 ```
 
 ## WebSocket
 
-Fiber 支持 Websocket 升级中间件。 `*Conn` 结构具有来自 [**gorilla/websocket**](https://github.com/gorilla/websocket) 库的所有功能。
+Fiber 支持 websocket 中间件。 `*Conn` 结构体包含了 [**gorilla/websocket**](https://github.com/gorilla/websocket) 里的所有功能
 
 **安装**
 
@@ -383,21 +454,21 @@ websocket.New(handler func(*Conn), config ...Config) func(*Ctx)
 
 **配置**
 
-| 属性                | 类型              | 说明                                                              | 默认              |
-|:----------------- |:--------------- |:--------------------------------------------------------------- |:--------------- |
-| HandshakeTimeout  | `time.Duration` | 指定完成握手的时间。                                                      | `0`             |
-| Subprotocols      | `[]string`      | 指定服务器支持的协议按首选项顺序排列。 如果此字段不是nil, 升级方法将选择此列表中的第一个与客户端请求协议所匹配的子协议。 | `nil`           |
-| Origins           | `[]string`      | 定义可接受的站点，默认允许所有站点。                                              | `[]string{"*"}` |
-| ReadBufferSize    | `int`           | ReadBufferSize 读取缓冲以字节形式指定 I/O 缓冲区大小。                           | `1024`          |
-| WriteBufferSize   | `int`           | WriteBufferSize 写入缓冲以字节形式指定 I/O 缓冲区大小。                          | `1024`          |
-| EnableCompression | `bool`          | 表示服务器是否应尝试压缩每个消息 \(RFC 7692\)                                 | `false`         |
+| 属性                | 类型              | 说明                                                                                      | 默认              |
+|:----------------- |:--------------- |:--------------------------------------------------------------------------------------- |:--------------- |
+| HandshakeTimeout  | `time.Duration` | 握手阶段超时设置                                                                                | `0`             |
+| Subprotocols      | `[]string`      | 指定支持的协议，优先级按照定义顺序。 如果该设置不为空，在调用 Upgrade 方法时，会根据客户端指定的协议从列表中选出第一个符合的 subprotocol 作为协商结果。 | `nil`           |
+| Origins           | `[]string`      | 指定哪些只允许接受哪些 origin 的 websocket 请求，默认不作限制。                                               | `[]string{"*"}` |
+| ReadBufferSize    | `int`           | 指定“读缓存”的大小，单位为字节                                                                        | `1024`          |
+| WriteBufferSize   | `int`           | 指定“写缓存”的大小                                                                              | `1024`          |
+| EnableCompression | `bool`          | 是否尝试对每条消息进行压缩（依据 RFC 7692 规范）                                                           | `false`         |
 
 **示例**
 
 ```go
 package main
 
-import 
+import (
   "github.com/gofiber/fiber"
   "github.com/gofiber/websocket"
 )
@@ -412,7 +483,7 @@ func main() {
 
   app.Get("/ws", websocket.New(func(c *websocket.Conn) {
     fmt.Println(c.Locals("Hello")) // "World"
-    // Websocket 逻辑...
+    // Websocket logic...
     for {
       mt, msg, err := c.ReadMessage()
       if err != nil {
@@ -434,7 +505,7 @@ func main() {
 
 ## Request ID
 
-使用 `X-Request-ID` 头字段为请求添加标识符。
+Request ID 为每个请求添加 `X-Request-ID` 首部，并赋予一个标识符
 
 **安装**
 
@@ -450,10 +521,10 @@ requestid.New(config ...Config) func(*Ctx)
 
 **配置**
 
-| 属性        | 类型                        | 说明             | 默认                           |
-|:--------- |:------------------------- |:-------------- |:---------------------------- |
-| Filter    | `func(*fiber.Ctx) bool`   | 定义跳过中间件的函数     | `nil`                        |
-| Generator | `func(*fiber.Ctx) string` | 生成器定义了生成ID的函数。 | `return uuid.New().String()` |
+| 属性        | 类型                        | 说明         | 默认                       |
+|:--------- |:------------------------- |:---------- |:------------------------ |
+| Filter    | `func(*fiber.Ctx) bool`   | 定义跳过中间件的函数 | `nil`                    |
+| Generator | `func(*fiber.Ctx) string` | 定义 ID 生成策略 | `返回 uuid.New().String()` |
 
 **示例**
 
@@ -480,7 +551,7 @@ func main() {
 
 ## Helmet
 
-头盔中间件提供保护以防止跨站脚本\(XSS\)攻击、内容类型嗅探攻击、点击劫持、不安全的连接和其他代码注入攻击。
+Helmet 中间件主要提供跨站脚本攻击（XSS）、内容嗅探（content type sniffing）、点击劫持（clickjacking）、非安全连接和其他代码注入攻击的防护。
 
 **安装**
 
@@ -499,15 +570,15 @@ helmet.New(config ...Config) func(*Ctx)
 | 属性                    | 类型                      | 说明                                                                                                                                              | 默认               |
 |:--------------------- |:----------------------- |:----------------------------------------------------------------------------------------------------------------------------------------------- |:---------------- |
 | Filter                | `func(*fiber.Ctx) bool` | 定义跳过中间件的函数                                                                                                                                      | `nil`            |
-| XSSProtection         | `string`                | XSSProtection 通过设置 `X-XSS-Protection` 头字段来提供保护，免遭跨地点脚本攻击 \(XSS\)。                                                                             | `1; mode=block"` |
-| ContentTypeNosniff    | `string`                | ContentTypeNosniff 通过设置 `X-Content-Type-Options` 头字段提供保护，免受覆盖Content-Type 头字段的影响。                                                               | `"nosniff"`      |
-| XFrameOptions         | `string`                | XFrameworkOptions 可以用来表示是否允许浏览器在 `frame`, `iframe`, `embed` 或 `object ` 中渲染。 这可以避免点击劫持，确保内容不会被嵌入到其他站点。 允许的值： `SAMEORIGIN, DENY, ALLOW-FROM uri` | `"SAMEORIGIN"`   |
-| HSTSMaxAge            | `int`                   | HSTSMaxAge 设置 `Strict-Transport-Security` 头字段来指示浏览器应该记住这个网站多久\(秒\) 以 HTTPS 访问。 这可以减少您暴露在 SSL 中间人攻击的风险\(MITM\)。                              | \`\`         |
-| HSTSExcludeSubdomains | `bool`                  | HSTSExclusdeSubdomains 不会在 `Strict Transport Security` 头字段中包含子域标签，将从安全策略中排除所有子域。 除非HSTSMaxAge设置为非零值，否则它不会生效。                                    | \`\`         |
-| ContentSecurityPolicy | `string`                | ContentSecurityPolicy 设置了 `Content-Security-Policy` 头字段来避免在受信任的网页环境中执行了恶意内容而导致的影响，可以防止跨网站脚本攻击 \(XSS\)，点击劫持和其他代码注入攻击。                          | \`\`         |
-| CSPReportOnly         | `bool`                  |                                                                                                                                                 | \`\`         |
-| HSTSPreloadEnabled    | `bool`                  |                                                                                                                                                 | \`\`         |
-| ReferrerPolicy        | `string`                |                                                                                                                                                 | \`\`         |
+| XSSProtection         | `string`                | 通过设置 `X-XSS-Protection` 首部提供 XSS 防护                                                                                                             | `1; mode=block"` |
+| ContentTypeNosniff    | `string`                | 通过设置 `X-Content-Type-Options` 首部防护 Content-Type 首部篡改。                                                                                           | `"nosniff"`      |
+| XFrameOptions         | `string`                | XFrameOptions 设置是否允许页面被嵌入到 &ltframe&gt、&ltiframe&gt 或 &ltobject&gt 中。 网站可以设置此选项来防止点击劫持，主要通过防止网站页面被嵌入到其他站点。 可选值：`SAMEORIGIN、DENY、ALLOW-FROM uri` | `"SAMEORIGIN"`   |
+| HSTSMaxAge            | `int`                   | 设置 `Strict-Transport-Security` 首部，让浏览器记住在多长时间内（秒为单位）都要使用 HTTPS 来访问当前网站。 这可以减少 SSL-stripping 和中间人攻击（MITM）的风险。                                    | `0`              |
+| HSTSExcludeSubdomains | `bool`                  | 设置为 true 将会排除 `Strict Transport Security` 首部中设置的子域名，将这些子域名排除在安全策略外。 如果 HSTSMaxAge 的值不为 0，那么此字段的设置无效。                                            | `false`          |
+| ContentSecurityPolicy | `string`                | 设置 `Content-Security-Policy` 首部来避免遭受 XSS、点击劫持和其他代码注入的攻击，防止在可信任的页面上展示/运行恶意内容/代码。                                                                 | `""`             |
+| CSPReportOnly         | `bool`                  |                                                                                                                                                 | `false`          |
+| HSTSPreloadEnabled    | `bool`                  |                                                                                                                                                 | `false`          |
+| ReferrerPolicy        | `string`                |                                                                                                                                                 | `""`             |
 
 **示例**
 
@@ -535,9 +606,9 @@ func main() {
 
 ## Redirect
 
-重定向中间件支持 HTTP 重定向到指定路径的 URL ，且具有指定的状态，是一个对应于HTTP状态代码的正整数。
+提供 HTTP 跳转功能，根据配置定义跳转到一个指定的地址、返回指定的状态码。
 
-**安装**
+**Installation**
 
 ```bash
 go get -u github.com/gofiber/redirect
