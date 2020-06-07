@@ -1,10 +1,12 @@
 ---
-description: Eine API-Dokumentation, damit du mit der Entwicklung von Webanwendungen mit Fiber beginnen kannst.
+description: >-
+  Eine API-Dokumentation, damit du mit der Entwicklung von Webanwendungen mit
+  Fiber beginnen kannst.
 ---
 
 # 📖 Erste Schritte
 
- [![](https://img.shields.io/github/release/gofiber/fiber?style=flat-square)](https://github.com/gofiber/fiber/releases)  [![](https://img.shields.io/badge/go.dev-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/gofiber/fiber?tab=doc)   [![](https://goreportcard.com/badge/github.com/gofiber/fiber?style=flat-square)](https://goreportcard.com/report/github.com/gofiber/fiber)  [![](https://img.shields.io/badge/coverage-91%25-brightgreen?style=flat-square)](https://gocover.io/github.com/gofiber/fiber)  [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Test?label=tests&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3ATest)  [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Gosec?label=gosec&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3AGosec)
+[![](https://img.shields.io/github/release/gofiber/fiber?style=flat-square)](https://github.com/gofiber/fiber/releases) [![](https://img.shields.io/badge/go.dev-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/gofiber/fiber?tab=doc) [![](https://goreportcard.com/badge/github.com/gofiber/fiber?style=flat-square)](https://goreportcard.com/report/github.com/gofiber/fiber) [![](https://img.shields.io/badge/coverage-91%25-brightgreen?style=flat-square)](https://gocover.io/github.com/gofiber/fiber) [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Test?label=tests&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3ATest) [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Gosec?label=gosec&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3AGosec)
 
 **Fiber** ist ein an [Express](https://github.com/expressjs/express) angelehntes **Webframework**, welches auf [Fasthttp](https://github.com/valyala/fasthttp), der **schnellsten** HTTP-Engine für [Go](https://golang.org/doc/), aufbaut. Konzipiert, um die Voraussetzungen für eine **schnelle** und **einfache** Entwicklung mit **null Speicherzuweisung** und **hoher Leistung** zu schaffen.
 
@@ -42,11 +44,11 @@ func main() {
 go run server.go
 ```
 
-Besuche `http://localhost:3000` und du solltest ` Hello, World!` auf der Seite sehen.
+Besuche `http://localhost:3000` und du solltest `Hello, World!` auf der Seite sehen.
 
 ## Basic routing
 
-Routing bezieht sich darauf, wie eine Anwendung auf einen bestimmten Endpunkt antworten soll die eine URI \(oder path\) und eine bestimmte HTTP-Anfragemethode \(GET, PUT, POST usw.) ist.
+Routing bezieht sich darauf, wie eine Anwendung auf einen bestimmten Endpunkt antworten soll die eine URI \(oder path\) und eine bestimmte HTTP-Anfragemethode \(GET, PUT, POST usw.\) ist.
 
 {% hint style="info" %}
 Jede Route kann **mehrere Handler-Funktionen**haben, die ausgeführt werden, wenn die Route übereinstimmt.

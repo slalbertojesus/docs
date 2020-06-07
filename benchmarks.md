@@ -1,6 +1,7 @@
 ---
 description: >-
-  This benchmarks aims to compare the performance of Fiber and other web frameworks.
+  This benchmarks aims to compare the performance of Fiber and other web
+  frameworks.
 ---
 
 # 🤖 Benchmarks
@@ -26,7 +27,7 @@ description: >-
 
 ### Datenaktualisierung
 
-**Fiber** behandelte **11,846**</strong> Antworten pro Sekunde mit einer durchschnittlichen Latenz von **42.8** ms.  
+**Fiber** behandelte **11,846**&lt;/strong&gt; Antworten pro Sekunde mit einer durchschnittlichen Latenz von **42.8** ms.  
 **Express** behandelte **2,066** Antworten pro Sekunde mit einer durchschnittlichen Latenz von **390.44** ms.
 
 ![](.gitbook/assets/data_updates.png)
