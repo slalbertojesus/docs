@@ -2,7 +2,7 @@
 description: 用于表示Fiber应用程序的实例。
 ---
 
-# 🚀 应用程序
+# 🚀 Application
 
 ## New
 
@@ -11,7 +11,7 @@ description: 用于表示Fiber应用程序的实例。
 
 {% code title="Signature" %}
 ```go
-fiber.New(settings ...*Settings) *App
+fiber.New(settings ...Settings) *App
 ```
 {% endcode %}
 
@@ -75,32 +75,33 @@ func main() {
 
 **设置** **字段**
 
-| 属性                        | 类型              | 说明                                                                                                                                                                            | 默认                |
-|:------------------------- |:--------------- |:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |:----------------- |
-| Prefork                   | `bool`          | 启用[`SO_REUSEPORT`](https://lwn.net/Articles/542629/) socket 选项。 这将生成多个Go进程用于监听同一个端口。 了解更多关于 [socket 分片](https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/)。     | `false`           |
-| ServerHeader              | `string`        | 启用 `Server` HTTP 头字段并设置为传入的值。                                                                                                                                                 | `""`              |
-| StrictRouting             | `bool`          | 如果启用，路由器将区分 `/foo` 和 `/foo/` 为不同的路由。 否则，路由器将视 `/foo` 和 `/foo/` 为相同的路由。                                                                                                        | `false`           |
-| CaseSensitive             | `bool`          | 启用时， `/Foo` 和 `/foo` 是不同的路由。 当禁用时， `/Foo` 和 `/foo` 将被视为同一个路由。                                                                                                                 | `false`           |
-| Immutable                 | `bool`          | 如果启用，上下文 context 方法返回的所有值都是不可变的。 默认情况下，直到您从处理器返回前，它们都是有效的，请查看问题 [\#185](https://github.com/gofiber/fiber/issues/185)。                                                       | `false`           |
-| BodyLimit                 | `int`           | 设置请求实体的最大允许限制，如果大小超过配置的限制， 发送 `413 - Request Entity Too Large` 请求实体太大的响应。                                                                                                     | `4 * 1024 * 1024` |
-| Concurrency               | `int`           | 设置并发联接的最大个数。                                                                                                                                                                  | `256 * 1024`      |
-| DisableKeepalive          | `bool`          | 禁用保持存活连接，服务器将在向客户端发送首次响应后关闭传入的连接。                                                                                                                                             | `false`           |
-| DisableDefaultDate        | `bool`          | 当设置为 true 时，默认日期头字段 date header 将被排除在响应之外。                                                                                                                                    | `false`           |
-| DisableDefaultContentType | `bool`          | 当设置为 true时，默认内容类型头字段 Content-Type header 将被排除在响应之外。                                                                                                                           | `false`           |
-| DisableStartupMessage     | `bool`          | 当设置为 true时，它将不会在日志中打印 fiber 的 ASCII 图像和信息“监听”。                                                                                                                                | `false`           |
-| DisableHeaderNormalizing  | `bool`          | By default all header names are normalized: conteNT-tYPE -&gt; Content-Type                                                                                             | `false`           |
-| ETag                      | `bool`          | Enable or disable ETag header generation, since both weak and strong etags are generated using the same hashing method \(CRC-32\). Weak ETags are the default when enabled. | `false`           |
-| Templates                 | `Templates`     | Templates is the interface that wraps the Render function. See our [**Template Middleware**](middleware.md#template) for supported engines.                                   | `nil`             |
-| ReadTimeout               | `time.Duration` | The amount of time allowed to read the full request including body. 默认无超时限制。                                                                                                  | `nil`             |
-| WriteTimeout              | `time.Duration` | The maximum duration before timing out writes of the response. 默认无超时限制。                                                                                                       | `nil`             |
-| IdleTimeout               | `time.Duration` | The maximum amount of time to wait for the next request when keep-alive is enabled. If IdleTimeout is zero, the value of ReadTimeout is used.                                 | `nil`             |
+| 属性 | 类型 | 说明 | 默认 |
+| :--- | :--- | :--- | :--- |
+| Prefork | `bool` | 启用[`SO_REUSEPORT`](https://lwn.net/Articles/542629/) socket 选项。 这将生成多个Go进程用于监听同一个端口。 了解更多关于 [socket 分片](https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/)。 | `false` |
+| ServerHeader | `string` | 启用 `Server` HTTP 头字段并设置为传入的值。 | `""` |
+| StrictRouting | `bool` | 如果启用，路由器将区分 `/foo` 和 `/foo/` 为不同的路由。 否则，路由器将视 `/foo` 和 `/foo/` 为相同的路由。 | `false` |
+| CaseSensitive | `bool` | 启用时， `/Foo` 和 `/foo` 是不同的路由。 当禁用时， `/Foo` 和 `/foo` 将被视为同一个路由。 | `false` |
+| Immutable | `bool` | 如果启用，上下文 context 方法返回的所有值都是不可变的。 默认情况下，直到您从处理器返回前，它们都是有效的，请查看问题 [\#185](https://github.com/gofiber/fiber/issues/185)。 | `false` |
+| BodyLimit | `int` | 设置请求实体的最大允许限制，如果大小超过配置的限制， 发送 `413 - Request Entity Too Large` 请求实体太大的响应。 | `4 * 1024 * 1024` |
+| Concurrency | `int` | 设置并发联接的最大个数。 | `256 * 1024` |
+| DisableKeepalive | `bool` | 禁用保持存活连接，服务器将在向客户端发送首次响应后关闭传入的连接。 | `false` |
+| DisableDefaultDate | `bool` | 当设置为 true 时，默认日期头字段 date header 将被排除在响应之外。 | `false` |
+| DisableDefaultContentType | `bool` | 当设置为 true时，默认内容类型头字段 Content-Type header 将被排除在响应之外。 | `false` |
+| DisableStartupMessage | `bool` | 当设置为 true时，它将不会在日志中打印 fiber 的 ASCII 图像和信息“监听”。 | `false` |
+| ETag | `bool` | 启用或禁用 ETag 头字段，这是因为弱 Etags 和 强 Etags 都是使用相同的散列（哈希）方法 \(CRC-32\)。 启用时，默认使用弱 ETags。 | `false` |
+| TemplateEngine | `func(raw string, bind interface{}) (string, error)` | 您可以指定一个自定义模板函数来渲染不同的模板语言。 查看我们的 [**模板中间件**](middleware.md#template) _\*\*_预设。 | `nil` |
+| TemplateFolder | `string` | 应用程序的 view 目录。 如果设置了目录，这将是所有模板路径的前缀。 `c.Render("home", data) -> ./views/home.pug` | `""` |
+| TemplateExtension | `string` | 如果您预设了模板文件的扩展名，您就不需要在渲染函数中提供完整的文件名： `c.Render("home", data) -> home.pug` | `"html"` |
+| ReadTimeout | `time.Duration` | 读取请求最大允许的时间 （包括读取 body）。 默认无超时限制。 | `nil` |
+| WriteTimeout | `time.Duration` | 写出响应最大允许的时间。默认无超时限制。 默认无超时限制。 | `nil` |
+| IdleTimeout | `time.Duration` | 开启保持存活时，等待下一次请求的最大允许时间。 如果IdleTimeout为零，则使用ReadTimeout的值。 | `nil` |
 
 ## Static
 
 使用 **Static** 静态方法来为提供静态文件，例如 **图片**, **CSS** 和 **JavaScript**。
 
 {% hint style="info" %}
-默认情况下，**Static** 方法将自动以目录下的 `index.html` 文件作为请求某个目录的响应。
+默认情况下， **Static** 将提供 `index.html` 文件响应于目录上的请求。
 {% endhint %}
 
 {% code title="Signature" %}
@@ -137,7 +138,7 @@ app.Static("/", "./files")
 使用反向代理缓存，如 [**NGINX**](https://www.nginx.com/resources/wiki/start/topics/examples/reverseproxycachingexample/) 来提高读取静态文件的性能。
 {% endhint %}
 
-您可以使用任意的虚拟路径前缀 \(_该路径实际上不存在于系统_\) 来提取通过  **Static** 方法提供的静态文件, 只需指定如下所示的静态文件目录路缀即可：
+您可以使用任意的虚拟路径前缀 \(_该路径实际上不存在于系统_\) 来提取通过 **Static** 方法提供的静态文件, 只需指定如下所示的静态文件目录路缀即可：
 
 {% code title="Example" %}
 ```go
@@ -191,9 +192,9 @@ app.Static("/", "./public", fiber.Static{
 
 {% code title="Signatures" %}
 ```go
-// HTTP 方法支持 :param 参数, :optional？可选项 and *wildcards
-// 您需要为每个HTTP方法传入一个路径
-app.All(path string, handlers ...func(*Ctx)) []*Route
+// HTTP 方法支持 :param 参数, :optional？可选项 和 *wildcards 通配符
+// 你需要为每个HTTP方法传入一个路径
+app.All(path string, handlers ...func(*Ctx)) *Fiber
 app.Get
 app.Put
 app.Post
@@ -204,11 +205,11 @@ app.Delete
 app.Connect
 app.Options
 
-// Use() 只会匹配前段路径
-// 例如： "/john" 会匹配 "/john/doe", "/johnnnn"
-// Use() 不支持参数（:param） & 可选项（:optional?） 在路径使用
-app.Use(handlers ...func(*Ctx)) *Route
-app.Use(prefix string, handlers ...func(*Ctx)) *Route
+// Use() 只匹配前段部分的路径
+// 例如：. "/john" will match "/john/doe", "/johnnnn"
+// Use() 不支持 :param 参数 & :optional? 可选项 用于路径
+app.Use(handlers ...func(*Ctx))
+app.Use(prefix string, handlers ...func(*Ctx)) *Fiber
 ```
 {% endcode %}
 
@@ -243,13 +244,13 @@ app.Group(prefix string, handlers ...func(*Ctx)) *Group
 func main() {
   app := fiber.New()
 
-  api := app.Group("/api", handler)  // /api
+  api := app.Group("/api", cors())  // /api
 
-  v1 := api.Group("/v1", handler)   // /api/v1
+  v1 := api.Group("/v1", mysql())   // /api/v1
   v1.Get("/list", handler)          // /api/v1/list
   v1.Get("/user", handler)          // /api/v1/user
 
-  v2 := api.Group("/v2", handler) // /api/v2
+  v2 := api.Group("/v2", mongodb()) // /api/v2
   v2.Get("/list", handler)          // /api/v2/list
   v2.Get("/user", handler)          // /api/v2/user
 
