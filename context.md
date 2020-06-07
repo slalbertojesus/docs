@@ -1,13 +1,15 @@
 ---
 description: >-
-  A estrutura Ctx representa o Contexto que contém a solicitação e a resposta HTTP. Possui métodos para a seqüência de consulta de solicitação, parâmetros, corpo, cabeçalhos HTTP e assim por diante.
+  A estrutura Ctx representa o Contexto que contém a solicitação e a resposta
+  HTTP. Possui métodos para a seqüência de consulta de solicitação, parâmetros,
+  corpo, cabeçalhos HTTP e assim por diante.
 ---
 
 # 🧠 Context
 
 ## Accepts
 
-Verifica se as **extensões** ou **tipos de conteúdo** **** especificados são aceitáveis.
+Verifica se as **extensões** ou **tipos de conteúdo** _\*\*_ especificados são aceitáveis.
 
 {% hint style="info" %}
 Com base no cabeçalho [Accept](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept) da requisição HTTP.
@@ -58,7 +60,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Append
 
-Adiciona o  **valor** especificado ao campo de cabeçalho de resposta HTTP.
+Adiciona o **valor** especificado ao campo de cabeçalho de resposta HTTP.
 
 {% hint style="warning" %}
 Se o cabeçalho **não estiver** definido, ele cria o cabeçalho com o valor especificado.
@@ -84,7 +86,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Attachment
 
-Define a resposta HTTP [Content-Disposition](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition) no campo de cabeçalho </a> para `anexo`.
+Define a resposta HTTP [Content-Disposition](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition) no campo de cabeçalho &lt;/a&gt; para `anexo`.
 
 {% code title="Signature" %}
 ```go
@@ -148,7 +150,7 @@ app.Post("/", func(c *fiber. tx) {
 
 ## BodyParser
 
-Vincula o corpo da solicitação a uma estrutura. `BodyParser` suporta a decodificação de parâmetros de consulta e os seguintes tipos de conteúdo baseados no cabeçalho `Content-Type`:
+Binds the request body to a struct. `BodyParser` supports decoding query parameters and the following content types based on the `Content-Type` header:
 
 * `application/json`
 * `application/xml`
@@ -195,7 +197,7 @@ app.Post("/", func(c *fiber.Ctx) {
 
 ## ClearCookie
 
-Expirar um cookie de cliente \(_ou todos os cookies se deixados vazios\)_
+Expire a client cookie \(_or all cookies if left empty\)_
 
 {% code title="Signature" %}
 ```go
@@ -220,7 +222,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Cookie
 
-Definir cookies
+Set cookie
 
 **Assinatura**
 
@@ -244,13 +246,13 @@ type Cookie struct {
 {% code title="Example" %}
 ```go
 app.Get("/", func(c *fiber.Ctx) {
-  // Criar cookie
+  // Create cookie
   cookie := new(fiber.Cookie)
   cookie.Name = "john"
   cookie.Value = "doe"
   cookie.Expires = time.Now().Add(24 * time.Hour)
 
-  // Definir cookie
+  // Set cookie
   c.Cookie(cookie)
 })
 ```
@@ -258,7 +260,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Cookies
 
-Obter valor de cookie por chave.
+Get cookie value by key.
 
 **Signature**s
 
@@ -269,19 +271,19 @@ c.Cookies(key string) string
 {% code title="Example" %}
 ```go
 app.Get("/", func(c *fiber.Ctx) {
-  // Obtenha cookie por chave:
-  c.Cookies("nome") // "john"
+  // Get cookie by key:
+  c.Cookies("name") // "john"
 })
 ```
 {% endcode %}
 
 ## Download
 
-Transfere o arquivo do caminho como um `anexo`.
+Transfers the file from path as an `attachment`.
 
-Normalmente, os navegadores irão solicitar o download do usuário. Por padrão, o parâmetro [Content-Disposition](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition) header `filename=` é o caminho do arquivo \(_que geralmente aparece na caixa de diálogo do navegador_\).
+Typically, browsers will prompt the user for download. By default, the [Content-Disposition](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition) header `filename=` parameter is the filepath \(_this typically appears in the browser dialog_\).
 
-Sobrescrever esse padrão com o **parâmetro de nome do arquivo**.
+Override this default with the **filename** parameter.
 
 {% code title="Signature" %}
 ```go
@@ -303,12 +305,12 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Fasthttp
 
-Você ainda pode **acessar** e usar todos os métodos e propriedades **Fasthttp.**
+You can still **access** and use all **Fasthttp** methods and properties.
 
 **Assinatura**
 
 {% hint style="info" %}
-Por favor, leia a [Documentação Fasthttp](https://pkg.go.dev/github.com/valyala/fasthttp?tab=doc) para obter mais informações.
+Please read the [Fasthttp Documentation](https://pkg.go.dev/github.com/valyala/fasthttp?tab=doc) for more information.
 {% endhint %}
 
 **Exemplo**
@@ -325,7 +327,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## Error
 
-Contém a informação de erro lançada por um `panic` ou transmitidas pelo método [`Next(err)`](https://github.com/gofiber/docs/tree/8d965e1e05fb67f965934586c78335ef29f52128/context/README.md#error).
+This contains the error information that thrown by a panic or passed via the [`Next(err)`](https://github.com/gofiber/docs/tree/8d965e1e05fb67f965934586c78335ef29f52128/context/README.md#error) method.
 
 {% code title="Signature" %}
 ```go
@@ -363,10 +365,10 @@ func main() {
 
 ## Format
 
-Com base no cabeçalho [Accept](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept) da requisição HTTP. [Accepts](context.md#accepts) é usado para selecionar um formato adequado.
+Performs content-negotiation on the [Accept](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept) HTTP header. It uses [Accepts](context.md#accepts) to select a proper format.
 
 {% hint style="info" %}
-Se o cabeçalho **não** for especificado ou não houver **nenhum** formato adequado, **text/plain** será usado.
+If the header is **not** specified or there is **no** proper format, **text/plain** is used.
 {% endhint %}
 
 {% code title="Signature" %}
@@ -379,23 +381,23 @@ c.Format(body interface{})
 ```go
 app.Get("/", func(c *fiber.Ctx) {
   // Accept: text/plain
-  c.Format("Olá, Mundo!")
-  // => Olá, Mundo!
+  c.Format("Hello, World!")
+  // => Hello, World!
 
   // Accept: text/html
-  c.Format("Olá, Mundo!")
-  // => <p>Olá, Mundo!</p>
+  c.Format("Hello, World!")
+  // => <p>Hello, World!</p>
 
   // Accept: application/json
-  c.Format("Olá, Mundo!")
-  // => "Olá, Mundo!"
+  c.Format("Hello, World!")
+  // => "Hello, World!"
 })
 ```
 {% endcode %}
 
 ## FormFile
 
-Os arquivos MultipartForm podem ser recuperados pelo nome, o **primeiro** arquivo da chave determinada é retornado.
+MultipartForm files can be retrieved by name, the **first** file from the given key is returned.
 
 {% code title="Signature" %}
 ```go
@@ -707,12 +709,11 @@ app.Post("/", func(c *fiber.Ctx) {
 
 ## Method
 
-Contains a string corresponding to the HTTP method of the request: `GET`, `POST`, `PUT` and so on.  
-Optionally, you could override the method by passing a string.
+Contains a string corresponding to the HTTP method of the request: `GET`, `POST`, `PUT` and so on.
 
 {% code title="Signature" %}
 ```go
-c.Method(override ...string) string
+c.Method() string
 ```
 {% endcode %}
 
@@ -839,11 +840,11 @@ app.Get("/user/:name", func(c *fiber.Ctx) {
 
 ## Path
 
-Contains the path part of the request URL. Optionally, you could override the path by passing a string.
+Contains the path part of the request URL.
 
 {% code title="Signature" %}
 ```go
-c.Path(override ...string) string
+c.Path() string
 ```
 {% endcode %}
 

@@ -1,6 +1,6 @@
-# Índice
+# Table of contents
 
-* [📖 Guia de Introdução](README.md)
+* [Guia de Introdução](README.md)
 * [🚀 Aplicação](application.md)
 * [🧠 Context](context.md)
 * [🧬 Middleware](middleware.md)
@@ -13,5 +13,5 @@
 * [🍳 Examples](https://github.com/gofiber/recipes)
 * [📝 Github](https://github.com/gofiber/fiber)
 * [☕ Buy Coffee](https://www.buymeacoffee.com/fenny)
-* [💬 Discord](https://gofiber.io/discord)
+* [💬 Telegram](https://t.me/gofiber)
 
