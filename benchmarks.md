@@ -1,6 +1,7 @@
 ---
 description: >-
-  Ces benchmarks ont pour but de comparer les performances de Fiber avec les autres framekworks web.
+  Ces benchmarks ont pour but de comparer les performances de Fiber avec les
+  autres framekworks web.
 ---
 
 # 🤖 Benchmarks

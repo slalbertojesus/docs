@@ -1,6 +1,8 @@
 ---
 description: >-
-  La structure Ctx représente le contexte qui contient la requête et la réponse HTTP. Il a des méthodes pour exploiter la requête telle que les paramètres, le corps, les en-têtes HTTP etc.
+  La structure Ctx représente le contexte qui contient la requête et la réponse
+  HTTP. Il a des méthodes pour exploiter la requête telle que les paramètres, le
+  corps, les en-têtes HTTP etc.
 ---
 
 # 🧠 Context
@@ -358,7 +360,7 @@ func main() {
   })
   app.Listen(1337)
 }
- 
+
 Text
 XPath: /pre[25]/code
 ```
@@ -631,7 +633,7 @@ app.Get("/", func(c *fiber.Ctx) {
   c.JSONP(data, "customFunc")
   // => customFunc({"name": "Grame", "age": 20})
 })
- 
+
 Text
 XPath: /pre[45]/code
 ```
@@ -766,7 +768,7 @@ app.Post("/", func(c *fiber.Ctx) {
     }
   }
 })
- 
+
 Text
 XPath: /pre[55]/code
 ```
@@ -1295,7 +1297,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
 ## XHR
 
-Une propriété booléenne, qui est `vrai`, si l'en-tête de la requête HTTP [X-Requested-With](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) est [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest), indique que la requête a été initié par une librairie (comme par exemple [jQuery](https://api.jquery.com/jQuery.ajax/)\).
+Une propriété booléenne, qui est `vrai`, si l'en-tête de la requête HTTP [X-Requested-With](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers) est [XMLHttpRequest](https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest), indique que la requête a été initié par une librairie \(comme par exemple [jQuery](https://api.jquery.com/jQuery.ajax/)\).
 
 {% code title="Signature" %}
 ```go
