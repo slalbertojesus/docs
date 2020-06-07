@@ -1,10 +1,12 @@
 ---
-description: Документация к API, которая поможет вам начать разрабатывать веб-приложения с Fiber.
+description: >-
+  Документация к API, которая поможет вам начать разрабатывать веб-приложения с
+  Fiber.
 ---
 
 # 📖 Приступая к работе
 
- [![](https://img.shields.io/github/release/gofiber/fiber?style=flat-square)](https://github.com/gofiber/fiber/releases)  [![](https://img.shields.io/badge/go.dev-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/gofiber/fiber?tab=doc)   [![](https://goreportcard.com/badge/github.com/gofiber/fiber?style=flat-square)](https://goreportcard.com/report/github.com/gofiber/fiber)  [![](https://img.shields.io/badge/coverage-91%25-brightgreen?style=flat-square)](https://gocover.io/github.com/gofiber/fiber)  [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Test?label=tests&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3ATest)  [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Gosec?label=gosec&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3AGosec)
+[![](https://img.shields.io/github/release/gofiber/fiber?style=flat-square)](https://github.com/gofiber/fiber/releases) [![](https://img.shields.io/badge/go.dev-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/gofiber/fiber?tab=doc) [![](https://goreportcard.com/badge/github.com/gofiber/fiber?style=flat-square)](https://goreportcard.com/report/github.com/gofiber/fiber) [![](https://img.shields.io/badge/coverage-91%25-brightgreen?style=flat-square)](https://gocover.io/github.com/gofiber/fiber) [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Test?label=tests&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3ATest) [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Gosec?label=gosec&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3AGosec)
 
 **Fiber** — это веб фреймворк, который был вдохновлен [Express](https://github.com/expressjs/express) и основан на [Fasthttp](https://github.com/valyala/fasthttp), самом **быстром** HTTP-движке написанном на [Go](https://golang.org/doc/). Фреймворк был разработан с целью **упростить** процесс **быстрой** разработки **высокопроизводительных** веб-приложений с **нулевым распределением памяти**.
 
@@ -46,7 +48,7 @@ go run server.go
 
 ## Basic routing
 
-Маршрутизация относится к определению того, как приложение отвечает на клиентский запрос на определенную конечную точку (endpoint), которая является URI \(или путь\) и определенным методом HTTP запроса \(GET, PUT, POST и так далее\).
+Маршрутизация относится к определению того, как приложение отвечает на клиентский запрос на определенную конечную точку \(endpoint\), которая является URI \(или путь\) и определенным методом HTTP запроса \(GET, PUT, POST и так далее\).
 
 {% hint style="info" %}
 Каждый маршрут может иметь **функции обработчика**, который выполняется при совпадении маршрута.
@@ -62,7 +64,7 @@ app.Method(path string, ...func(*fiber.Ctx))
 * `app` является экземпляром **Fiber**.
 * `Method` — это [метод HTTP запроса](https://fiber.wiki/application#methods), начинающийся с заглавной буквы: `Get`, `Put`, `Post` и так далее.
 * `path` — это виртуальный путь на сервере.
-* `func(*fiber.Ctx)` является функцией обратного вызова (callback), содержащей [Context](https://fiber.wiki/context), который выполняется при совпадении маршрута.
+* `func(*fiber.Ctx)` является функцией обратного вызова \(callback\), содержащей [Context](https://fiber.wiki/context), который выполняется при совпадении маршрута.
 
 **Простой маршрут**
 
@@ -99,7 +101,7 @@ app.Get("/:name?", func(c *fiber.Ctx) {
 })
 ```
 
-**Шаблоны (wildcards)**
+**Шаблоны \(wildcards\)**
 
 ```go
 // GET http://localhost:3000/api/user/john

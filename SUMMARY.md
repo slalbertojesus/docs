@@ -1,4 +1,4 @@
-# Оглавление
+# Table of contents
 
 * [📖 Приступая к работе](README.md)
 * [🚀 Приложение](application.md)
