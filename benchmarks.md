@@ -1,6 +1,7 @@
 ---
 description: >-
-  Celem tego benchmarku jest porównanie wydajności Fiber i innych frameworków internetowych.
+  Celem tego benchmarku jest porównanie wydajności Fiber i innych frameworków
+  internetowych.
 ---
 
 # 🤖 Benchmarki

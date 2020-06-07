@@ -1,6 +1,7 @@
 ---
 description: >-
-  Routing określa jak aplikacja powinna reagować na zapytania pod konkretne endpointy (URI).
+  Routing określa jak aplikacja powinna reagować na zapytania pod konkretne
+  endpointy (URI).
 ---
 
 # 🔌 Routing
