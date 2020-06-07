@@ -1,6 +1,7 @@
 ---
 description: >-
-  Estas pruebas tienen como objetivo comparar el rendimiento de Fiber y otros web frameworks.
+  Estas pruebas tienen como objetivo comparar el rendimiento de Fiber y otros
+  web frameworks.
 ---
 
 # 🤖 Pruebas de Rendimiento

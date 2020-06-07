@@ -1,13 +1,14 @@
 ---
 description: >-
-  La ruta se refiere a cómo los extremos (endpoints) de una aplicación (URIs) responden a las peticiones del cliente.
+  La ruta se refiere a cómo los extremos (endpoints) de una aplicación (URIs)
+  responden a las peticiones del cliente.
 ---
 
 # 🔌 Enrutamiento
 
 ## Paths
 
-Las direcciones de la ruta, en combinación con un método de solicitud, definen los extremos en los que se pueden realizar las solicitudes. Las rutas pueden ser **cadenas (strings)** o **patrones de cadenas**.
+Las direcciones de la ruta, en combinación con un método de solicitud, definen los extremos en los que se pueden realizar las solicitudes. Las rutas pueden ser **cadenas \(strings\)** o **patrones de cadenas**.
 
 **Ejemplos de rutas basadas en cadenas**
 
@@ -37,7 +38,7 @@ El nombre del parámetro de ruta debe estar compuesto de **caracteres** \(`[A-Za
 {% endhint %}
 
 {% hint style="danger" %}
-El guión \\(`-`\\) no está **interpretado literalmente**. Planned for **Fiber** v1.11.
+El guión \\(`-`\\) no está **interpretado literalmente**. Planeado para **Fiber** v1.10.
 {% endhint %}
 
 **Ejemplo de definir rutas con parámetros de ruta**

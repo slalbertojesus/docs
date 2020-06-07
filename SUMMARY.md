@@ -1,4 +1,4 @@
-# Tabla de contenidos
+# Table of contents
 
 * [📖 Primeros Pasos](README.md)
 * [🚀 Aplicación](application.md)
@@ -13,5 +13,5 @@
 * [🍳 Ejemplos](https://github.com/gofiber/recipes)
 * [📝 Github](https://github.com/gofiber/fiber)
 * [☕ Comprar Café](https://www.buymeacoffee.com/fenny)
-* [💬 Discord](https://gofiber.io/discord)
+* [💬 Telegram](https://gofiber.io/discord)
 
