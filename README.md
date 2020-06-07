@@ -4,7 +4,7 @@ description: Una documentazione API per iniziare a costruire web apps con Fiber.
 
 # 📖 Introduzione
 
- [![](https://img.shields.io/github/release/gofiber/fiber?style=flat-square)](https://github.com/gofiber/fiber/releases)  [![](https://img.shields.io/badge/go.dev-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/gofiber/fiber?tab=doc)   [![](https://goreportcard.com/badge/github.com/gofiber/fiber?style=flat-square)](https://goreportcard.com/report/github.com/gofiber/fiber)  [![](https://img.shields.io/badge/coverage-91%25-brightgreen?style=flat-square)](https://gocover.io/github.com/gofiber/fiber)  [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Test?label=tests&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3ATest)  [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Gosec?label=gosec&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3AGosec)
+[![](https://img.shields.io/github/release/gofiber/fiber?style=flat-square)](https://github.com/gofiber/fiber/releases) [![](https://img.shields.io/badge/go.dev-007d9c?logo=go&logoColor=white&style=flat-square)](https://pkg.go.dev/github.com/gofiber/fiber?tab=doc) [![](https://goreportcard.com/badge/github.com/gofiber/fiber?style=flat-square)](https://goreportcard.com/report/github.com/gofiber/fiber) [![](https://img.shields.io/badge/coverage-91%25-brightgreen?style=flat-square)](https://gocover.io/github.com/gofiber/fiber) [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Test?label=tests&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3ATest) [![](https://img.shields.io/github/workflow/status/gofiber/fiber/Gosec?label=gosec&style=flat-square)](https://github.com/gofiber/fiber/actions?query=workflow%3AGosec)
 
 **Fiber** è un **web framework** ispirato da [Express](https://github.com/expressjs/express) e costruito su [Fasthttp](https://github.com/valyala/fasthttp), l'engine HTTP **più veloce** per [Go](https://golang.org/doc/). Creato per **semplificare** le cose per uno sviluppo **veloce**, con **zero memoria occupata** e **performance**.
 
@@ -46,7 +46,7 @@ Visita `http://localhost:3000` e dovresti vedere `Ciao, Mondo!` nella pagina.
 
 ## Basic routing
 
-Il routing si riferisce alla determinazione di come un'applicazione risponde ad una richiesta di un client ad un determinato endpoint, che è un URI (o path) e un metodo di richiesta HTTP specifico (GET, PUT, POST e così via).
+Il routing si riferisce alla determinazione di come un'applicazione risponde ad una richiesta di un client ad un determinato endpoint, che è un URI \(o path\) e un metodo di richiesta HTTP specifico \(GET, PUT, POST e così via\).
 
 {% hint style="info" %}
 Ogni route può avere **funzioni multiple di gestione**, che vengono eseguite quando la route è soddisfatta.

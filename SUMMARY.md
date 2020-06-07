@@ -1,4 +1,4 @@
-# Indice
+# Table of contents
 
 * [📖 Introduzione](README.md)
 * [🚀 Applicazione](application.md)
@@ -13,5 +13,5 @@
 * [🍳 Esempi](https://github.com/gofiber/recipes)
 * [📝 Github](https://github.com/gofiber/fiber)
 * [☕ Compraci un caffè](https://www.buymeacoffee.com/fenny)
-* [💬 Discord](https://gofiber.io/discord)
+* [💬 Telegram](https://gofiber.io/discord)
 
