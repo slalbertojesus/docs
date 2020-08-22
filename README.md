@@ -130,13 +130,12 @@ app.Get("/:value", func(c *fiber.Ctx) error {
 ```go
 // GET http://localhost:3000/john
 
-app.Get("/:name?", func(c *fiber.Ctx) {
+app.Get("/:name?", func(c *fiber.Ctx) error {
   if c.Params("name") != "" {
-    c.Send("Hello " + c.Params("name"))
+    return c.SendString("Hello " + c.Params("name"))
     // => Hello john
-  } else {
-    c.Send("Where is john?")
   }
+  return c.SendString("Where is john?")
 })
 ```
 
@@ -145,8 +144,8 @@ app.Get("/:name?", func(c *fiber.Ctx) {
 ```go
 // GET http://localhost:3000/api/user/john
 
-app.Get("/api/*", func(c *fiber.Ctx) {
-  c.Send("API path: " + c.Params("*"))
+app.Get("/api/*", func(c *fiber.Ctx) error {
+  return c.SendString("API path: " + c.Params("*"))
   // => API path: user/john
 })
 ```
@@ -168,7 +167,7 @@ app := fiber.New()
 
 app.Static("/", "./public") 
 
-app.Listen(8080)
+app.Listen(":3000")
 ```
 
 Now, you can load the files that are in the `./public` directory:
