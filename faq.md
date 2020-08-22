@@ -24,21 +24,21 @@ All you need to do is add a middleware function at the very bottom of the stack 
 
 {% code title="Example" %}
 ```go
-app.Use(func(c *fiber.Ctx) {
-    c.Status(fiber.StatusNotFound).SendString("Sorry can't find that!")
+app.Use(func(c *fiber.Ctx) error {
+    return c.Status(fiber.StatusNotFound).SendString("Sorry can't find that!")
 })
 ```
 {% endcode %}
 
 ## How do I set up an error handler?
 
-To override the default error handler, provide a custom handler to the `app.Settings.ErrorHandler`
+To override the default error handler, provide a custom handler to the `app.Errors`
 
 {% code title="Example" %}
 ```go
-app.Settings.ErrorHandler = func(c *fiber.Ctx, err error) {
+app.Errors(func(c *fiber.Ctx, err error) {
     c.Status(500).SendString(err.Error())
-}
+})
 ```
 {% endcode %}
 
