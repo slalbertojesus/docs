@@ -28,13 +28,14 @@ c.AcceptsLanguages(langs ...string)        string
 ```go
 // Accept: text/*, application/json
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) er{
   c.Accepts("html")             // "html"
   c.Accepts("text/html")        // "text/html"
   c.Accepts("json", "text")     // "json"
   c.Accepts("application/json") // "application/json"
   c.Accepts("image/png")        // ""
   c.Accepts("png")              // ""
+  // ...
 })
 ```
 {% endcode %}
@@ -46,7 +47,7 @@ Fiber provides similar functions for the other accept headers.
 // Accept-Encoding: gzip, compress;q=0.2
 // Accept-Language: en;q=0.8, nl, ru
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.AcceptsCharsets("utf-16", "iso-8859-1") 
   // "iso-8859-1"
 
@@ -55,6 +56,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
   c.AcceptsLanguages("pt", "nl", "ru") 
   // "nl"
+  // ...
 })
 ```
 
@@ -74,12 +76,13 @@ c.Append(field, values ...string)
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Append("Link", "http://google.com", "http://localhost")
   // => Link: http://localhost, http://google.com
 
   c.Append("Link", "Test")
   // => Link: http://localhost, http://google.com, Test
+  // ...
 })
 ```
 {% endcode %}
@@ -96,13 +99,14 @@ c.Attachment(file ...string)
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Attachment()
   // => Content-Disposition: attachment
 
   c.Attachment("./upload/images/logo.png")
   // => Content-Disposition: attachment; filename="logo.png"
   // => Content-Type: image/png
+  // ...
 })
 ```
 {% endcode %}
@@ -119,9 +123,8 @@ c.App() *App
 
 {% code title="Example" %}
 ```go
-app.Get("/bodylimit", func(c *fiber.Ctx) {
-  bodylimit := c.App().Settings.BodyLimit
-  c.Send(bodylimit)
+app.Get("/stack", func(c *fiber.Ctx) error {
+  return c.JSON(c.App().Stack())
 })
 ```
 {% endcode %}
@@ -140,8 +143,9 @@ c.BaseURL() string
 ```go
 // GET https://example.com/page#chapter-1
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.BaseURL() // https://example.com
+  // ...
 })
 ```
 {% endcode %}
@@ -152,7 +156,7 @@ Returns the request **body**.
 
 {% code title="Signature" %}
 ```go
-c.Body() string
+c.Body() []byte
 ```
 {% endcode %}
 
@@ -160,9 +164,9 @@ c.Body() string
 ```go
 // curl -X POST http://localhost:8080 -d user=john
 
-app.Post("/", func(c *fiber.Ctx) {
+app.Post("/", func(c *fiber.Ctx) error {
   // Get raw body from POST request:
-  c.Body() // user=john
+  c.Body() // []byte("user=john")
 })
 ```
 {% endcode %}
@@ -193,15 +197,16 @@ type Person struct {
     Pass string `json:"pass" xml:"pass" form:"pass"`
 }
 
-app.Post("/", func(c *fiber.Ctx) {
+app.Post("/", func(c *fiber.Ctx) error {
         p := new(Person)
 
         if err := c.BodyParser(p); err != nil {
-            log.Fatal(err)
+            return err
         }
 
         log.Println(p.Name) // john
         log.Println(p.Pass) // doe
+        // ...
 })
 // Run tests with the following curl commands
 
@@ -229,7 +234,7 @@ c.ClearCookie(key ...string)
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   // Clears all cookies:
   c.ClearCookie()
 
@@ -238,6 +243,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
   // Expire multiple cookies by names:
   c.ClearCookie("token", "session", "track_id", "version")
+  // ...
 })
 ```
 {% endcode %}
@@ -248,7 +254,7 @@ Web browsers and other compliant clients will only clear the cookie if the given
 
 {% code title="Example" %}
 ```go
-app.Get("/set", func(c *fiber.Ctx) {
+app.Get("/set", func(c *fiber.Ctx) error {
     c.Cookie(&fiber.Cookie{
         Name:     "token",
         Value:    "randomvalue",
@@ -256,9 +262,10 @@ app.Get("/set", func(c *fiber.Ctx) {
         HTTPOnly: true,
         SameSite: "lax",
     })
+    // ...
 })
 
-app.Get("/delete", func(c *fiber.Ctx) {
+app.Get("/delete", func(c *fiber.Ctx) error {
     c.Cookie(&fiber.Cookie{
         Name:     "token",
         // Set expiry date to the past
@@ -266,6 +273,7 @@ app.Get("/delete", func(c *fiber.Ctx) {
         HTTPOnly: true,
         SameSite: "lax",
     })
+    // ...
 })
 ```
 {% endcode %}
@@ -305,7 +313,7 @@ type Cookie struct {
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   // Create cookie
   cookie := new(fiber.Cookie)
   cookie.Name = "john"
@@ -314,6 +322,7 @@ app.Get("/", func(c *fiber.Ctx) {
 
   // Set cookie
   c.Cookie(cookie)
+  // ...
 })
 ```
 {% endcode %}
@@ -330,10 +339,11 @@ c.Cookies(key string, defaultValue ...string) string
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   // Get cookie by key:
   c.Cookies("name")         // "john"
   c.Cookies("empty", "doe") // "doe"
+  // ...
 })
 ```
 {% endcode %}
@@ -357,15 +367,11 @@ c.Download(path, filename ...string) error
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
-  if err := c.Download("./files/report-12345.pdf"); err != nil {
-    c.Next(err) // Pass err to fiber
-  }
+app.Get("/", func(c *fiber.Ctx) error {
+  return c.Download("./files/report-12345.pdf");
   // => Download report-12345.pdf
-
-  if err := c.Download("./files/report-12345.pdf", "report.pdf"); err != nil {
-    c.Next(err) // Pass err to fiber
-  }
+  
+  return c.Download("./files/report-12345.pdf", "report.pdf");
   // => Download report.pdf
 })
 ```
@@ -384,52 +390,14 @@ Please read the [Fasthttp Documentation](https://pkg.go.dev/github.com/valyala/f
 **Example**
 
 ```go
-app.Get("/", func(c *fiber.Ctx) {
-  c.Fasthttp.Request.Header.Method()
+app.Get("/", func(c *fiber.Ctx) error {
+  c.Fasthttp().Request.Header.Method()
   // => []byte("GET")
 
-  c.Fasthttp.Response.Write([]byte("Hello, World!"))
+  c.Fasthttp().Response.Write([]byte("Hello, World!"))
   // => "Hello, World!"
 })
 ```
-
-## Error
-
-This contains the error information that thrown by a panic or passed via the [`Next(err)`](https://github.com/gofiber/docs/tree/8d965e1e05fb67f965934586c78335ef29f52128/context/README.md#error) method.
-
-{% code title="Signature" %}
-```go
-c.Error() error
-```
-{% endcode %}
-
-{% code title="Example" %}
-```go
-func main() {
-  app := fiber.New()
-  app.Post("/api/register", func (c *fiber.Ctx) {
-    if err := c.JSON(&User); err != nil {
-      c.Next(err)
-    }
-  })
-  app.Get("/api/user", func (c *fiber.Ctx) {
-    if err := c.JSON(&User); err != nil {
-      c.Next(err)
-    }
-  })
-  app.Put("/api/update", func (c *fiber.Ctx) {
-    if err := c.JSON(&User); err != nil {
-      c.Next(err)
-    }
-  })
-  app.Use("/api", func(c *fiber.Ctx) {
-    c.Set("Content-Type", "application/json")
-    c.Status(500).Send(c.Error())
-  })
-  app.Listen(1337)
-}
-```
-{% endcode %}
 
 ## Format
 
@@ -447,7 +415,7 @@ c.Format(body interface{})
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   // Accept: text/plain
   c.Format("Hello, World!")
   // => Hello, World!
@@ -459,6 +427,7 @@ app.Get("/", func(c *fiber.Ctx) {
   // Accept: application/json
   c.Format("Hello, World!")
   // => "Hello, World!"
+  // ..
 })
 ```
 {% endcode %}
@@ -475,15 +444,12 @@ c.FormFile(name string) (*multipart.FileHeader, error)
 
 {% code title="Example" %}
 ```go
-app.Post("/", func(c *fiber.Ctx) {
+app.Post("/", func(c *fiber.Ctx) error {
   // Get first file from form field "document":
   file, err := c.FormFile("document")
 
-  // Check for errors:
-  if err == nil {
-    // Save file to root directory:
-    c.SaveFile(file, fmt.Sprintf("./%s", file.Filename))
-  }
+  // Save file to root directory:
+  return c.SaveFile(file, fmt.Sprintf("./%s", file.Filename))
 })
 ```
 {% endcode %}
@@ -494,16 +460,17 @@ Any form values can be retrieved by name, the **first** value from the given key
 
 {% code title="Signature" %}
 ```go
-c.FormValue(name string) string
+c.FormValue(name string, defaultValue ...string) string
 ```
 {% endcode %}
 
 {% code title="Example" %}
 ```go
-app.Post("/", func(c *fiber.Ctx) {
+app.Post("/", func(c *fiber.Ctx) error {
   // Get first value from form field "name":
   c.FormValue("name")
   // => "john" or "" if not exist
+  // ..
 })
 ```
 {% endcode %}
@@ -529,16 +496,17 @@ The match is **case-insensitive**.
 
 {% code title="Signature" %}
 ```go
-c.Get(field string) string
+c.Get(field string, defaultValue ...string) string
 ```
 {% endcode %}
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Get("Content-Type") // "text/plain"
   c.Get("CoNtEnT-TypE") // "text/plain"
-  c.Get("something")    // ""
+  c.Get("something", "john")    // "john"
+  // ..
 })
 ```
 {% endcode %}
@@ -560,8 +528,9 @@ c.Hostname() string
 ```go
 // GET http://google.com/search
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Hostname() // "google.com"
+  // ...
 })
 ```
 {% endcode %}
@@ -581,8 +550,9 @@ c.IP() string
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.IP() // "127.0.0.1"
+  // ...
 })
 ```
 {% endcode %}
@@ -601,8 +571,9 @@ c.IPs() []string
 ```go
 // X-Forwarded-For: proxy1, 127.0.0.1, proxy3
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.IPs() // ["proxy1", "127.0.0.1", "proxy3"]
+  // ...
 })
 ```
 {% endcode %}
@@ -625,10 +596,11 @@ c.Is(t string) bool
 ```go
 // Content-Type: text/html; charset=utf-8
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Is("html")  // true
   c.Is(".html") // true
   c.Is("json")  // false
+  // ...
 })
 ```
 {% endcode %}
@@ -654,27 +626,21 @@ type SomeStruct struct {
   Age  uint8
 }
 
-app.Get("/json", func(c *fiber.Ctx) {
+app.Get("/json", func(c *fiber.Ctx) error {
   // Create data struct:
   data := SomeStruct{
     Name: "Grame",
     Age:  20,
   }
 
-  if err := c.JSON(data); err != nil {
-    c.Status(500).Send(err)
-    return
-  }
+  return c.JSON(data)
   // => Content-Type: application/json
   // => "{"Name": "Grame", "Age": 20}"
 
-  if err := c.JSON(fiber.Map{
+  return c.JSON(fiber.Map{
     "name": "Grame",
     "age": 20,
-  }); err != nil {
-    c.Status(500).Send(err)
-    return
-  }
+  })
   // => Content-Type: application/json
   // => "{"name": "Grame", "age": 20}"
 })
@@ -700,17 +666,17 @@ type SomeStruct struct {
   age  uint8
 }
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   // Create data struct:
   data := SomeStruct{
     name: "Grame",
     age:  20,
   }
 
-  c.JSONP(data)
+  return c.JSONP(data)
   // => callback({"name": "Grame", "age": 20})
 
-  c.JSONP(data, "customFunc")
+  return c.JSONP(data, "customFunc")
   // => customFunc({"name": "Grame", "age": 20})
 })
 ```
@@ -728,13 +694,15 @@ c.Links(link ...string)
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Link(
     "http://api.example.com/users?page=2", "next",
     "http://api.example.com/users?page=5", "last",
   )
   // Link: <http://api.example.com/users?page=2>; rel="next",
   //       <http://api.example.com/users?page=5>; rel="last"
+
+  // ...
 })
 ```
 {% endcode %}
@@ -755,17 +723,17 @@ c.Locals(key string, value ...interface{}) interface{}
 
 {% code title="Example" %}
 ```go
-app.Use(func(c *fiber.Ctx) {
+app.Use(func(c *fiber.Ctx) error {
   c.Locals("user", "admin")
-  c.Next()
+  return c.Next()
 })
 
-app.Get("/admin", func(c *fiber.Ctx) {
+app.Get("/admin", func(c *fiber.Ctx) error {
   if c.Locals("user") == "admin" {
-    c.Status(200).Send("Welcome, admin!")
-  } else {
-    c.SendStatus(403) // => 403 Forbidden
+    return c.Status(200).SendString("Welcome, admin!")
   }
+  return c.SendStatus(403) // => 403 Forbidden
+  
 })
 ```
 {% endcode %}
@@ -782,9 +750,9 @@ c.Location(path string)
 
 {% code title="Example" %}
 ```go
-app.Post("/", func(c *fiber.Ctx) {
-  c.Location("http://example.com")
-  c.Location("/foo/bar")
+app.Post("/", func(c *fiber.Ctx) error {
+  return c.Location("http://example.com")
+  return c.Location("/foo/bar")
 })
 ```
 {% endcode %}
@@ -802,8 +770,9 @@ c.Method(override ...string) string
 
 {% code title="Example" %}
 ```go
-app.Post("/", func(c *fiber.Ctx) {
+app.Post("/", func(c *fiber.Ctx) error {
   c.Method() // "POST"
+  // ...
 })
 ```
 {% endcode %}
@@ -820,7 +789,7 @@ c.MultipartForm() (*multipart.Form, error)
 
 {% code title="Example" %}
 ```go
-app.Post("/", func(c *fiber.Ctx) {
+app.Post("/", func(c *fiber.Ctx) error {
   // Parse the multipart form:
   if form, err := c.MultipartForm(); err == nil {
     // => *multipart.Form
@@ -840,8 +809,12 @@ app.Post("/", func(c *fiber.Ctx) {
       // => "tutorial.pdf" 360641 "application/pdf"
 
       // Save the files to disk:
-      c.SaveFile(file, fmt.Sprintf("./%s", file.Filename))
+      if err := c.SaveFile(file, fmt.Sprintf("./%s", file.Filename)); err != nil {
+        return err
+      }
     }
+
+    return err
   }
 })
 ```
@@ -859,19 +832,19 @@ c.Next(err ...error)
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   fmt.Println("1st route!")
-  c.Next()
+  return c.Next()
 })
 
-app.Get("*", func(c *fiber.Ctx) {
+app.Get("*", func(c *fiber.Ctx) error {
   fmt.Println("2nd route!")
-  c.Next()
+  return c.Next()
 })
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   fmt.Println("3rd route!")
-  c.Send("Hello, World!")
+  return c.Send("Hello, World!")
 })
 ```
 {% endcode %}
@@ -890,8 +863,9 @@ c.OriginalURL() string
 ```go
 // GET http://example.com/search?q=something
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.OriginalURL() // "/search?q=something"
+  // ...
 })
 ```
 {% endcode %}
@@ -917,9 +891,10 @@ c.Params(param string, defaultValue ...string) string
 ```go
 // GET http://example.com/user/fenny
 
-app.Get("/user/:name", func(c *fiber.Ctx) {
+app.Get("/user/:name", func(c *fiber.Ctx) error {
   c.Params("name")      // "fenny"
   c.Params("age", "21") // "21"
+  // ...
 })
 ```
 {% endcode %}
@@ -941,8 +916,9 @@ c.Path(override ...string) string
 ```go
 // GET http://example.com/users?sort=desc
 
-app.Get("/users", func(c *fiber.Ctx) {
+app.Get("/users", func(c *fiber.Ctx) error {
   c.Path() // "/users"
+  // ...
 })
 ```
 {% endcode %}
@@ -961,8 +937,9 @@ c.Protocol() string
 ```go
 // GET http://example.com
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Protocol() // "http"
+  // ...
 })
 ```
 {% endcode %}
@@ -985,10 +962,11 @@ c.Query(parameter string, defaultValue ...string) string
 ```go
 // GET http://example.com/shoes?order=desc&brand=nike
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Query("order")         // "desc"
   c.Query("brand")         // "nike"
   c.Query("empty", "nike") // "nike"
+  // ...
 })
 ```
 {% endcode %}
@@ -1015,16 +993,18 @@ type Person struct {
     Products []string   `query:"products"`
 }
 
-app.Post("/", func(c *fiber.Ctx) {
+app.Post("/", func(c *fiber.Ctx) error {
         p := new(Person)
 
         if err := c.QueryParser(p); err != nil {
-            log.Fatal(err)
+            return err
         }
 
         log.Println(p.Name)     // john
         log.Println(p.Pass)     // doe
         log.Println(p.Products) // [shoe, hat]
+
+        // ...
 })
 // Run tests with the following curl command
 
@@ -1045,7 +1025,7 @@ c.Range(int size)
 {% code title="Example" %}
 ```go
 // Range: bytes=500-700, 700-900
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   b := c.Range(1000)
   if b.Type == "bytes" {
       for r := range r.Ranges {
@@ -1073,11 +1053,11 @@ c.Redirect(path string, status ...int)
 
 {% code title="Example" %}
 ```go
-app.Get("/coffee", func(c *fiber.Ctx) {
+app.Get("/coffee", func(c *fiber.Ctx) error {
   c.Redirect("/teapot")
 })
 
-app.Get("/teapot", func(c *fiber.Ctx) {
+app.Get("/teapot", func(c *fiber.Ctx) error {
   c.Status(fiber.StatusTeapot).Send("🍵 short and stout 🍵")
 })
 ```
@@ -1085,11 +1065,11 @@ app.Get("/teapot", func(c *fiber.Ctx) {
 
 {% code title="More examples" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
-  c.Redirect("/foo/bar")
-  c.Redirect("../login")
-  c.Redirect("http://example.com")
-  c.Redirect("http://example.com", 301)
+app.Get("/", func(c *fiber.Ctx) error {
+  return c.Redirect("/foo/bar")
+  return c.Redirect("../login")
+  return c.Redirect("http://example.com")
+  return c.Redirect("http://example.com", 301)
 })
 ```
 {% endcode %}
@@ -1118,7 +1098,7 @@ c.Route() *Route
 ```go
 // http://localhost:8080/hello
 
-handler := func(c *fiber.Ctx) {
+handler := func(c *fiber.Ctx) error {
   r := c.Route()
   fmt.Println(r.Method, r.Path, r.Params, r.Handlers)
   // GET /hello/:name handler [name] 
@@ -1140,7 +1120,7 @@ c.SaveFile(fh *multipart.FileHeader, path string)
 
 {% code title="Example" %}
 ```go
-app.Post("/", func(c *fiber.Ctx) {
+app.Post("/", func(c *fiber.Ctx) error {
   // Parse the multipart form:
   if form, err := c.MultipartForm(); err == nil {
     // => *multipart.Form
@@ -1155,8 +1135,11 @@ app.Post("/", func(c *fiber.Ctx) {
       // => "tutorial.pdf" 360641 "application/pdf"
 
       // Save the files to disk:
-      c.SaveFile(file, fmt.Sprintf("./%s", file.Filename))
+      if err := c.SaveFile(file, fmt.Sprintf("./%s", file.Filename)); err != nil {
+        return err
+      }
     }
+    return err
   }
 })
 ```
@@ -1181,24 +1164,18 @@ c.Protocol() == "https"
 
 ## Send
 
-Sets the HTTP response body. The **Send** body can be of any type.
-
-{% hint style="warning" %}
-Send **doesn't** append like the [Write](https://fiber.wiki/context#write) method.
-{% endhint %}
+Sets the HTTP response body.
 
 {% code title="Signature" %}
 ```go
-c.Send(body ...interface{})
+c.Send(body []byte)
 ```
 {% endcode %}
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
-  c.Send("Hello, World!")         // => "Hello, World!"
-  c.Send([]byte("Hello, World!")) // => "Hello, World!"
-  c.Send(123)                     // => 123
+app.Get("/", func(c *fiber.Ctx) error {
+  return c.Send([]byte("Hello, World!")) // => "Hello, World!"
 })
 ```
 {% endcode %}
@@ -1211,7 +1188,6 @@ Use this if you **don't need** type assertion, recommended for **faster** perfor
 
 {% code title="Signature" %}
 ```go
-c.SendBytes(b []byte)
 c.SendString(s string)
 c.SendStream(r io.Reader, s ...int)
 ```
@@ -1219,14 +1195,11 @@ c.SendStream(r io.Reader, s ...int)
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
-  c.SendByte([]byte("Hello, World!"))
+app.Get("/", func(c *fiber.Ctx) error {
+  return c.SendString("Hello, World!")
   // => "Hello, World!"
 
-  c.SendString("Hello, World!")
-  // => "Hello, World!"
-
-  c.SendStream(bytes.NewReader([]byte("Hello, World!")))
+  return c.SendStream(bytes.NewReader([]byte("Hello, World!")))
   // => "Hello, World!"
 })
 ```
@@ -1248,15 +1221,11 @@ c.SendFile(path string, compress ...bool) error
 
 {% code title="Example" %}
 ```go
-app.Get("/not-found", func(c *fiber.Ctx) {
-  if err := c.SendFile("./public/404.html"); err != nil {
-    c.Next(err) // pass err to ErrorHandler
-  }
+app.Get("/not-found", func(c *fiber.Ctx) error {
+  return c.SendFile("./public/404.html");
 
   // Enable compression
-  if err := c.SendFile("./static/index.html", true); err != nil {
-    c.Next(err) // pass err to ErrorHandler
-  }
+  return c.SendFile("./static/index.html", true);
 })
 ```
 {% endcode %}
@@ -1277,12 +1246,12 @@ c.SendStatus(status int)
 
 {% code title="Example" %}
 ```go
-app.Get("/not-found", func(c *fiber.Ctx) {
-  c.SendStatus(415)
+app.Get("/not-found", func(c *fiber.Ctx) error {
+  return c.SendStatus(415)
   // => 415 "Unsupported Media Type"
 
-  c.Send("Hello, World!")
-  c.SendStatus(415)
+  _ = c.SendString("Hello, World!")
+  return c.SendStatus(415)
   // => 415 "Hello, World!"
 })
 ```
@@ -1300,9 +1269,10 @@ c.Set(field, value string)
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Set("Content-Type", "text/plain")
   // => "Content-type: text/plain"
+  // ...
 })
 ```
 {% endcode %}
@@ -1331,10 +1301,13 @@ c.Status(status int)
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Status(200)
-  c.Status(400).Send("Bad Request")
-  c.Status(404).SendFile("./public/gopher.png")
+  return nil
+
+  return c.Status(400).Send("Bad Request")
+
+  return c.Status(404).SendFile("./public/gopher.png")
 })
 ```
 {% endcode %}
@@ -1355,9 +1328,10 @@ c.Subdomains(offset ...int) []string
 ```go
 // Host: "tobi.ferrets.example.com"
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Subdomains()  // ["ferrets", "tobi"]
   c.Subdomains(1) // ["tobi"]
+  // ...
 })
 ```
 {% endcode %}
@@ -1374,11 +1348,12 @@ c.Type(t string) string
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Type(".html") // => "text/html"
   c.Type("html")  // => "text/html"
   c.Type("json")  // => "application/json"
   c.Type("png")   // => "image/png"
+  // ...
 })
 ```
 {% endcode %}
@@ -1399,7 +1374,7 @@ c.Vary(field ...string)
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Vary("Origin")     // => Vary: Origin
   c.Vary("User-Agent") // => Vary: Origin, User-Agent
 
@@ -1408,13 +1383,14 @@ app.Get("/", func(c *fiber.Ctx) {
 
   c.Vary("Accept-Encoding", "Accept")
   // => Vary: Origin, User-Agent, Accept-Encoding, Accept
+  // ...
 })
 ```
 {% endcode %}
 
 ## Write
 
-Appends **any** input to the HTTP body response.
+Write adopts the Writer interface
 
 {% code title="Signature" %}
 ```go
@@ -1424,10 +1400,10 @@ c.Write(body ...interface{})
 
 {% code title="Example" %}
 ```go
-app.Get("/", func(c *fiber.Ctx) {
-  c.Write("Hello, ")         // => "Hello, "
-  c.Write([]byte("World! ")) // => "Hello, World! "
-  c.Write(123)               // => "Hello, World! 123"
+app.Get("/", func(c *fiber.Ctx) error {
+  _, _ = c.Write([]byte("Hello, World!")) // => "Hello, World! "
+
+  fmt.Fprintf(c, "%s\n", "Hello, World!")
 })
 ```
 {% endcode %}
@@ -1446,8 +1422,9 @@ c.XHR() bool
 ```go
 // X-Requested-With: XMLHttpRequest
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.XHR() // true
+  // ...
 })
 ```
 {% endcode %}
