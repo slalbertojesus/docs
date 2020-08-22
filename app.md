@@ -303,6 +303,10 @@ func main() {
 ```
 {% endcode %}
 
+## Errors
+
+_TODO_
+
 ## Listen
 
 Listen serves HTTP requests from the given address.
