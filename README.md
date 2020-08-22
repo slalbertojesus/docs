@@ -97,20 +97,20 @@ Route definition takes the following structures:
 
 ```go
 // Function signature
-app.Method(path string, ...func(*fiber.Ctx))
+app.Method(path string, ...func(*fiber.Ctx) error)
 ```
 
 * `app` is an instance of **Fiber**.
 * `Method` is an [HTTP request method](https://fiber.wiki/application#methods), in capitalization: `Get`, `Put`, `Post`, etc.
 * `path` is a virtual path on the server.
-* `func(*fiber.Ctx)` is a callback function containing the [Context](https://fiber.wiki/context) executed when the route is matched.
+* `func(*fiber.Ctx) error` is a callback function containing the [Context](https://fiber.wiki/context) executed when the route is matched.
 
 **Simple route**
 
 ```go
 // Respond with "Hello, World!" on root path, "/"
-app.Get("/", func(c *fiber.Ctx) {
-  c.Send("Hello, World!")
+app.Get("/", func(c *fiber.Ctx) error {
+  return c.SendString("Hello, World!")
 })
 ```
 
@@ -119,8 +119,8 @@ app.Get("/", func(c *fiber.Ctx) {
 ```go
 // GET http://localhost:8080/hello%20world
 
-app.Get("/:value", func(c *fiber.Ctx) {
-  c.Send("Get request with value: " + c.Params("value"))
+app.Get("/:value", func(c *fiber.Ctx) error {
+  return c.SendString("value: " + c.Params("value"))
   // => Get request with value: hello world
 })
 ```
