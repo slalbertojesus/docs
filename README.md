@@ -27,28 +27,31 @@ Some values returned from [**fiber.Ctx**](ctx.md) are **not** immutable by defau
 Because fiber is optimized for **high-performance**, values returned from [**fiber.Ctx**](ctx.md) are **not** immutable by default and **will** be re-used across requests. As a rule of thumb, you **must** only use context values within the handler, and you **must not** keep any references. As soon as you return from the handler, any values you have obtained from the context will be re-used in future requests and will change below your feet. Here is an example:
 
 ```go
-func handler(c *fiber.Ctx) {
+func handler(c *fiber.Ctx) error {
     result := c.Param("foo") // result is only valid within this method
+    // ...
 }
 ```
 
 If you need to persist such values outside the handler, make copies of their **underlying buffer** using the [copy](https://golang.org/pkg/builtin/#copy) builtin. Here is an example for persisting a string:
 
 ```go
-func handler(c *fiber.Ctx) {
+func handler(c *fiber.Ctx) error {
     result := c.Param("foo") // result is only valid within this method
     newBuffer := make([]byte, len(result))
     copy(newBuffer, result)
     newResult := string(newBuffer) // newResult is immutable and valid forever
+    // ...
 }
 ```
 
 We created a custom `ImmutableString` function that does the above and is available in the [gofiber/utils](https://github.com/gofiber/utils) package.
 
 ```go
-app.Get("/:foo", func(c *fiber.Ctx) {
+app.Get("/:foo", func(c *fiber.Ctx) error {
     result := utils.ImmutableString(c.Param("foo")) 
     // result is now immutable
+    // ...
 })
 ```
 
@@ -68,11 +71,11 @@ import "github.com/gofiber/fiber"
 func main() {
   app := fiber.New()
 
-  app.Get("/", func(c *fiber.Ctx) {
-    c.Send("Hello, World!")
+  app.Get("/", func(c *fiber.Ctx) error {
+    return c.SendString("Hello, World!")
   })
 
-  app.Listen(3000)
+  app.Listen(":3000")
 }
 ```
 
