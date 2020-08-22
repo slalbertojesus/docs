@@ -15,17 +15,17 @@ Route paths, combined with a request method, define the endpoints at which reque
 ```go
 // This route path will match requests to the root route, "/":
 app.Get("/", func(c *fiber.Ctx) error {
-  c.Send("root")
+      return c.SendString("root")
 })
 
 // This route path will match requests to "/about":
 app.Get("/about", func(c *fiber.Ctx) error {
-  c.Send("about")
+    return c.SendString("about")
 })
 
 // This route path will match requests to "/random.txt":
 app.Get("/random.txt", func(c *fiber.Ctx) error {
-  c.Send("random.txt")
+    return c.SendString("random.txt")
 })
 ```
 
@@ -42,16 +42,17 @@ The name of the route parameter must be made up of **characters** \(`[A-Za-z0-9_
 ```go
 // Parameters
 app.Get("/user/:name/books/:title", func(c *fiber.Ctx) error {
-  c.Write(c.Params("name"))
-  c.Write(c.Params("title"))
+    fmt.Fprintf(c, "%s\n", c.Params("name"))
+	  fmt.Fprintf(c, "%s\n", c.Params("title"))
+    return nil
 })
 // Wildcard
 app.Get("/user/*", func(c *fiber.Ctx) error {
-  c.Send(c.Params("*"))
+    return c.SendString(c.Params("*"))
 })
 // Optional parameter
 app.Get("/user/:name?", func(c *fiber.Ctx) error {
-  c.Send(c.Params("name"))
+    return c.SendString(c.Params("name"))
 })
 ```
 
@@ -62,16 +63,16 @@ Since the hyphen \(`-`\) and the dot \(`.`\) are interpreted literally, they can
 ```go
 // http://localhost:3000/plantae/prunus.persica
 app.Get("/plantae/:genus.:species", func(c *fiber.Ctx) error {
-  c.Params("genus")   // prunus
-  c.Params("species") // persica
+    fmt.Fprintf(c, "%s.%s\n", c.Params("genus"), c.Params("species"))
+    return nil // prunus.persica
 })
 ```
 
 ```go
 // http://localhost:3000/flights/LAX-SFO
 app.Get("/flights/:from-:to", func(c *fiber.Ctx) error {
-  c.Params("from")   // LAX
-  c.Params("to")     // SFO
+    fmt.Fprintf(c, "%s-%s\n", c.Params("from"), c.Params("to"))
+    return nil // LAX-SFO
 })
 ```
 
@@ -92,14 +93,11 @@ app.Use(func(c *fiber.Ctx) error {
   c.Set("X-DNS-Prefetch-Control", "off")
 
   // Go to next middleware:
-  c.Next()
-
-  // End of the chain
-  fmt.Println("Bye 👋!")
+  return c.Next()
 })
 
 app.Get("/", func(c *fiber.Ctx) error {
-  c.Send("Hello, World!")
+  return c.SendString("Hello, World!")
 })
 ```
 
