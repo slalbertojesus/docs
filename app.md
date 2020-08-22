@@ -309,17 +309,14 @@ Binds and listens for connections on the specified address. This can be an `int`
 
 {% code title="Signature" %}
 ```go
-app.Listen(address interface{}, tls ...*tls.Config) error
+app.Listen(addr string) error
 ```
 {% endcode %}
 
 {% code title="Examples" %}
 ```go
-app.Listen(8080)
-app.Listen("8080")
 app.Listen(":8080")
 app.Listen("127.0.0.1:8080")
-app.Listen("[::1]:8080")
 ```
 {% endcode %}
 
@@ -339,23 +336,23 @@ app.Listen(443, config)
 
 ## Listener
 
-You can pass your own [`net.Listener`](https://golang.org/pkg/net/#Listener) using the `Listener` method.
+You can pass your own [`net.Listener`](https://golang.org/pkg/net/#Listener) using the `Listener` method. This method is used when you want to enable **TLS/HTTPS**.
 
 {% code title="Signature" %}
 ```go
-app.Listener(ln net.Listener, tls ...*tls.Config) error
+app.Listener(ln net.Listener) error
 ```
 {% endcode %}
 
-{% hint style="warning" %}
-**Listener** does not support the [**Prefork**](app.md#settings) feature.
-{% endhint %}
-
 {% code title="Example" %}
 ```go
-if ln, err = net.Listen("tcp", ":8080"); err != nil {
-    log.Fatal(err)
-}
+cer, _:= tls.LoadX509KeyPair("server.crt", "server.key")
+
+config := &tls.Config{Certificates: []tls.Certificate{cer}}
+
+ln, _ := net.Listen("tcp", ":3000")
+
+ln = tls.NewListener(ln, config)
 
 app.Listener(ln)
 ```
