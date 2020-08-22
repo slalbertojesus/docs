@@ -10,7 +10,7 @@ This method creates a new **App** named instance. You can pass optional [setting
 
 {% code title="Signature" %}
 ```go
-fiber.New(settings ...*Settings) *App
+fiber.New(config ...Config) *App
 ```
 {% endcode %}
 
@@ -25,20 +25,20 @@ func main() {
 
     // ...
 
-    app.Listen(3000)
+    app.Listen(":3000")
 }
 ```
 {% endcode %}
 
-## Settings
+## Config
 
-You can pass application settings when calling `New`.
+You can pass an optional Config when creating a new Fiber instance.
 
 {% code title="Example" %}
 ```go
 func main() {
-    // Pass Settings creating a new instance
-    app := fiber.New(&fiber.Settings{
+    // Pass config when creating a new instance
+    app := fiber.New(fiber.Config{
         Prefork:       true,
         CaseSensitive: true,
         StrictRouting: true,
@@ -47,43 +47,24 @@ func main() {
 
     // ...
 
-    app.Listen(3000)
+    app.Listen(":3000")
 }
 ```
 {% endcode %}
 
-Or change the settings after initializing an `app`.
-
-{% code title="Example" %}
-```go
-func main() {
-    app := fiber.New()
-
-    // Or change Settings after creating an instance
-    app.Settings.Prefork = true
-    app.Settings.CaseSensitive = true
-    app.Settings.StrictRouting = true
-    app.Settings.ServerHeader = "Fiber"
-
-    // ...
-
-    app.Listen(3000)
-}
-```
-{% endcode %}
-
-**Settings** **fields**
+ **Config fields**
 
 | Property | Type | Description | Default |
 | :--- | :--- | :--- | :--- |
 | Prefork | `bool` | Enables use of the[`SO_REUSEPORT`](https://lwn.net/Articles/542629/)socket option. This will spawn multiple Go processes listening on the same port. learn more about [socket sharding](https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/). | `false` |
 | ServerHeader | `string` | Enables the `Server` HTTP header with the given value. | `""` |
+| ProxyHeader | `string` | This will enable `c.IP()` to return the value of the given header key. By default `c.IP()` will return the Remote IP from the TCP connection, this property can be useful if you are behind a load balancer e.g. _X-Forwarded-\*_. **NOTE: headers are easily spoofed and the detected IP addresses are unreliable.** | `""` |
 | StrictRouting | `bool` | When enabled, the router treats `/foo` and `/foo/` as different. Otherwise, the router treats `/foo` and `/foo/` as the same. | `false` |
 | CaseSensitive | `bool` | When enabled, `/Foo` and `/foo` are different routes. When disabled, `/Foo`and `/foo` are treated the same. | `false` |
-| Immutable | `bool` | When enabled, all values returned by context methods are immutable. By default, they are valid until you return from the handler; see the issue [\#185](https://github.com/gofiber/fiber/issues/185). | `false` |
+| Immutable | `bool` | When enabled, all values returned by context methods are immutable. By default, they are valid until you return from the handler; see issue [\#185](https://github.com/gofiber/fiber/issues/185). | `false` |
 | UnescapePath | `bool` | Converts all encoded characters in the route back before setting the path for the context, so that the routing can also work with urlencoded special characters | `false` |
 | BodyLimit | `int` | Sets the maximum allowed size for a request body, if the size exceeds the configured limit, it sends `413 - Request Entity Too Large` response. | `4 * 1024 * 1024` |
-| CompressedFileSuffix | `string` | Adds suffix to the original file name and tries saving the resulting compressed file under the new file name. | `".fiber.gz"` |
+| CompressedFileSuffix | `string` | Adds a suffix to the original file name and tries saving the resulting compressed file under the new file name. | `".fiber.gz"` |
 | Concurrency | `int` | Maximum number of concurrent connections. | `256 * 1024` |
 | DisableKeepalive | `bool` | Disable keep-alive connections, the server will close incoming connections after sending the first response to client | `false` |
 | DisableDefaultDate | `bool` | When set to true causes the default date header to be excluded from the response. | `false` |
@@ -92,7 +73,7 @@ func main() {
 | DisableHeaderNormalizing | `bool` | By default all header names are normalized: conteNT-tYPE -&gt; Content-Type | `false` |
 | ETag | `bool` | Enable or disable ETag header generation, since both weak and strong etags are generated using the same hashing method \(CRC-32\). Weak ETags are the default when enabled. | `false` |
 | Views | `Views` | Views is the interface that wraps the Render function. See our **Template Middleware** for supported engines. | `nil` |
-| ReadTimeout | `time.Duration` | The amount of time allowed to read the full request, including body. The default timeout is unlimited. | `nil` |
+| ReadTimeout | `time.Duration` | The amount of time allowed to read the full request, including the body. The default timeout is unlimited. | `nil` |
 | WriteTimeout | `time.Duration` | The maximum duration before timing out writes of the response. The default timeout is unlimited. | `nil` |
 | IdleTimeout | `time.Duration` | The maximum amount of time to wait for the next request when keep-alive is enabled. If IdleTimeout is zero, the value of ReadTimeout is used. | `nil` |
 | ReadBufferSize | `int` | per-connection buffer size for requests' reading. This also limits the maximum header size. Increase this buffer if your clients send multi-KB RequestURIs and/or multi-KB headers \(for example, BIG cookies\). | `4096` |
@@ -100,7 +81,7 @@ func main() {
 
 ## Static
 
-Use the **Static** method to serve static files such as **images**, **CSS** and **JavaScript**.
+Use the **Static** method to serve static files such as **images**, **CSS,** and **JavaScript**.
 
 {% hint style="info" %}
 By default, **Static** will serve `index.html` files in response to a request on a directory.
@@ -195,41 +176,41 @@ Routes an HTTP request, where **METHOD** is the [HTTP method](https://developer.
 {% code title="Signatures" %}
 ```go
 // Add allows you to specifiy a method as value
-app.Add(method, path string, handlers ...func(*Ctx)) Router
+app.Add(method, path string, handlers ...func(*Ctx) error) Router
 
 // All will register the route on all methods
-app.All(path string, handlers ...func(*Ctx)) Router
+app.All(path string, handlers ...func(*Ctx) error) Router
 
 // HTTP methods
-app.Get(path string, handlers ...func(*Ctx)) Router
-app.Put(path string, handlers ...func(*Ctx)) Router
-app.Post(path string, handlers ...func(*Ctx)) Router
-app.Head(path string, handlers ...func(*Ctx)) Router
-app.Patch(path string, handlers ...func(*Ctx)) Router
-app.Trace(path string, handlers ...func(*Ctx)) Router
-app.Delete(path string, handlers ...func(*Ctx)) Router
-app.Connect(path string, handlers ...func(*Ctx)) Router
-app.Options(path string, handlers ...func(*Ctx)) Router
+app.Get(path string, handlers ...func(*Ctx) error) Router
+app.Put(path string, handlers ...func(*Ctx) error) Router
+app.Post(path string, handlers ...func(*Ctx) error) Router
+app.Head(path string, handlers ...func(*Ctx) error) Router
+app.Patch(path string, handlers ...func(*Ctx) error) Router
+app.Trace(path string, handlers ...func(*Ctx) error) Router
+app.Delete(path string, handlers ...func(*Ctx) error) Router
+app.Connect(path string, handlers ...func(*Ctx) error) Router
+app.Options(path string, handlers ...func(*Ctx) error) Router
 
 // Use is mostly used for middleware modules
 // These routes will only match the beggining of each path
 // i.e. "/john" will match "/john/doe", "/johnnnn"
-app.Use(handlers ...func(*Ctx)) Router
-app.Use(prefix string, handlers ...func(*Ctx)) Router
+app.Use(handlers ...func(*Ctx) error) Router
+app.Use(prefix string, handlers ...func(*Ctx) error) Router
 ```
 {% endcode %}
 
 {% code title="Example" %}
 ```go
-app.Use("/api", func(c *fiber.Ctx) {
+app.Use("/api", func(c *fiber.Ctx) error {
   c.Set("X-Custom-Header", random.String(32))
-  c.Next()
+  return c.Next()
 })
-app.Get("/api/list", func(c *fiber.Ctx) {
-  c.Send("I'm a GET request!")
+app.Get("/api/list", func(c *fiber.Ctx)error{
+  return c.SendString("I'm a GET request!")
 })
-app.Post("/api/register", func(c *fiber.Ctx) {
-  c.Send("I'm a POST request!")
+app.Post("/api/register", func(c *fiber.Ctx) error {
+  return c.SendString("I'm a POST request!")
 })
 ```
 {% endcode %}
@@ -241,7 +222,7 @@ You can group routes by creating a `*Group` struct.
 **Signature**
 
 ```go
-app.Group(prefix string, handlers ...func(*Ctx)) Router
+app.Group(prefix string, handlers ...func(*Ctx) error) Router
 ```
 
 **Example**
@@ -256,7 +237,7 @@ func main() {
   v1.Get("/list", handler)          // /api/v1/list
   v1.Get("/user", handler)          // /api/v1/user
 
-  v2 := api.Group("/v2", handler) // /api/v2
+  v2 := api.Group("/v2", handler)   // /api/v2
   v2.Get("/list", handler)          // /api/v2/list
   v2.Get("/user", handler)          // /api/v2/user
 
@@ -276,17 +257,49 @@ app.Stack() [][]*Route
 
 {% code title="Example" %}
 ```go
-app := fiber.New()
+var handler = func(c *fiber.Ctx) {}
 
-app.Use(handler)
-app.Get("/john", handler)
-app.Post("/register", handler)
-app.Get("/v1/users", handler)
-app.Put("/user/:id", handler)
-app.Head("/xhr", handler)
+func main() {
+	app := fiber.New()
 
-data, _ := json.MarshalIndent(app.Stack(), "", "  ")
-fmt.Println(string(data))
+	app.Get("/john", handler)
+	app.Post("/register", handler)
+
+	data, _ := json.MarshalIndent(app.Stack(), "", "  ")
+	fmt.Println(string(data))
+}
+```
+{% endcode %}
+
+{% code title="Result" %}
+```javascript
+[
+  [
+    {
+      "method": "GET",
+      "path": "/john/:age",
+      "params": [
+        "age"
+      ]
+    }
+  ],
+  [
+    {
+      "method": "HEAD",
+      "path": "/john/:age",
+      "params": [
+        "age"
+      ]
+    }
+  ],
+  [
+    {
+      "method": "POST",
+      "path": "/register",
+      "params": null
+    }
+  ]
+]
 ```
 {% endcode %}
 
