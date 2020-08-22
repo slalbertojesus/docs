@@ -14,17 +14,17 @@ Route paths, combined with a request method, define the endpoints at which reque
 
 ```go
 // This route path will match requests to the root route, "/":
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Send("root")
 })
 
 // This route path will match requests to "/about":
-app.Get("/about", func(c *fiber.Ctx) {
+app.Get("/about", func(c *fiber.Ctx) error {
   c.Send("about")
 })
 
 // This route path will match requests to "/random.txt":
-app.Get("/random.txt", func(c *fiber.Ctx) {
+app.Get("/random.txt", func(c *fiber.Ctx) error {
   c.Send("random.txt")
 })
 ```
@@ -41,16 +41,16 @@ The name of the route parameter must be made up of **characters** \(`[A-Za-z0-9_
 
 ```go
 // Parameters
-app.Get("/user/:name/books/:title", func(c *fiber.Ctx) {
+app.Get("/user/:name/books/:title", func(c *fiber.Ctx) error {
   c.Write(c.Params("name"))
   c.Write(c.Params("title"))
 })
 // Wildcard
-app.Get("/user/*", func(c *fiber.Ctx) {
+app.Get("/user/*", func(c *fiber.Ctx) error {
   c.Send(c.Params("*"))
 })
 // Optional parameter
-app.Get("/user/:name?", func(c *fiber.Ctx) {
+app.Get("/user/:name?", func(c *fiber.Ctx) error {
   c.Send(c.Params("name"))
 })
 ```
@@ -61,7 +61,7 @@ Since the hyphen \(`-`\) and the dot \(`.`\) are interpreted literally, they can
 
 ```go
 // http://localhost:3000/plantae/prunus.persica
-app.Get("/plantae/:genus.:species", func(c *fiber.Ctx) {
+app.Get("/plantae/:genus.:species", func(c *fiber.Ctx) error {
   c.Params("genus")   // prunus
   c.Params("species") // persica
 })
@@ -69,7 +69,7 @@ app.Get("/plantae/:genus.:species", func(c *fiber.Ctx) {
 
 ```go
 // http://localhost:3000/flights/LAX-SFO
-app.Get("/flights/:from-:to", func(c *fiber.Ctx) {
+app.Get("/flights/:from-:to", func(c *fiber.Ctx) error {
   c.Params("from")   // LAX
   c.Params("to")     // SFO
 })
@@ -82,7 +82,7 @@ Functions that are designed to make changes to the request or response are calle
 **Example of a middleware function**
 
 ```go
-app.Use(func(c *fiber.Ctx) {
+app.Use(func(c *fiber.Ctx) error {
   // Set some security headers:
   c.Set("X-XSS-Protection", "1; mode=block")
   c.Set("X-Content-Type-Options", "nosniff")
@@ -98,7 +98,7 @@ app.Use(func(c *fiber.Ctx) {
   fmt.Println("Bye 👋!")
 })
 
-app.Get("/", func(c *fiber.Ctx) {
+app.Get("/", func(c *fiber.Ctx) error {
   c.Send("Hello, World!")
 })
 ```
