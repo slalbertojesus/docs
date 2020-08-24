@@ -891,10 +891,33 @@ c.Params(param string, defaultValue ...string) string
 ```go
 // GET http://example.com/user/fenny
 
-app.Get("/user/:name", func(c *fiber.Ctx) error {
-  c.Params("name")      // "fenny"
-  c.Params("age", "21") // "21"
-  // ...
+app.Get("/user/:name", func(c *fiber.Ctx) {
+  c.Params("name") // "fenny"
+})
+
+// GET http://example.com/user/fenny/123
+app.Get("/user/*", func(c *fiber.Ctx) {
+  c.Params("*")  // "fenny/123"
+  c.Params("*1") // "fenny/123"
+})
+```
+{% endcode %}
+
+Unnamed route parameters(*, +) can be fetched by the character and the counter in the route.
+{% code title="Example" %}
+```go
+    // ROUTE: /v1/*/shop/*
+    // GET:   /v1/brand/4/shop/blue/xs
+    c.Params("*1")  // "brand/4"
+    c.Params("*2")  // "blue/xs"
+```
+{% endcode %}
+
+For reasons of downward compatibility, the first parameter segment for the parameter character can also be accessed without the counter.
+{% code title="Example" %}
+```go
+app.Get("/v1/*/shop/*", func(c *fiber.Ctx) {
+ c.Params("*") // outputs the values of the first wildcard segment
 })
 ```
 {% endcode %}
