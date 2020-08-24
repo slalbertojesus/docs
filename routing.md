@@ -31,11 +31,11 @@ app.Get("/random.txt", func(c *fiber.Ctx) error {
 
 ## Parameters
 
-Route parameters are dynamic elements in the route, which are **named** or **not named segments**. This segments that are used to capture the values specified at their position in the URL. The obtained values can be retrieved using the [Params](https://fiber.wiki/context#params) function, with the name of the route parameter specified in the path as their respective keys or for unnamed parameters the character(*, +) and the counter of this.
+Route parameters are dynamic elements in the route, which are **named** or **not named segments**. This segments that are used to capture the values specified at their position in the URL. The obtained values can be retrieved using the [Params](https://fiber.wiki/context#params) function, with the name of the route parameter specified in the path as their respective keys or for unnamed parameters the character\(\*, +\) and the counter of this.
 
-The characters :, +, and * are are characters that introduce a parameter.
+The characters :, +, and \* are are characters that introduce a parameter.
 
-Greedy parameters are indicated by wildcard(*) or plus(+) signs.
+Greedy parameters are indicated by wildcard\(\*\) or plus\(+\) signs.
 
 The routing also offers the possibility to use optional parameters, for the named parameters these are marked with a final "?", unlike the plus sign which is not optional, you can use the wildcard character for a parameter range which is optional and greedy.
 
@@ -45,7 +45,7 @@ The routing also offers the possibility to use optional parameters, for the name
 // Parameters
 app.Get("/user/:name/books/:title", func(c *fiber.Ctx) error {
     fmt.Fprintf(c, "%s\n", c.Params("name"))
-	  fmt.Fprintf(c, "%s\n", c.Params("title"))
+      fmt.Fprintf(c, "%s\n", c.Params("title"))
     return nil
 })
 // Plus - greedy - not optional
@@ -85,6 +85,7 @@ app.Get("/flights/:from-:to", func(c *fiber.Ctx) error {
 ```
 
 Our intelligent router recognizes that the introductory parameter characters should be part of the request route in this case and can process them as such.
+
 ```go
 // http://localhost:3000/shop/product/color:blue/size:xs
 app.Get("/shop/product/color::color/size::size", func(c *fiber.Ctx) error {
@@ -94,6 +95,7 @@ app.Get("/shop/product/color::color/size::size", func(c *fiber.Ctx) error {
 ```
 
 In addition, several parameters in a row and several unnamed parameter characters in the route, such as the wildcard or plus character, are possible, which greatly expands the possibilities of the router for the user.
+
 ```go
 // /@v1
 // "sign" -> "@", "param" -> "v1"
@@ -106,7 +108,7 @@ app.Get("/api-:name", handler)
 // /customer/v1/cart/proxy
 // "*1" -> "customer/", "*2" -> "/cart"
 app.Get("/*v1*/proxy", handler)
-  
+
 // /v1/brand/4/shop/blue/xs
 // "*1" -> "brand/4", "*2" -> "blue/xs"
 app.Get("/v1/*/shop/*", handler)
