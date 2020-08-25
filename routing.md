@@ -33,7 +33,7 @@ app.Get("/random.txt", func(c *fiber.Ctx) error {
 
 Route parameters are dynamic elements in the route, which are **named** or **not named segments**. This segments that are used to capture the values specified at their position in the URL. The obtained values can be retrieved using the [Params](https://fiber.wiki/context#params) function, with the name of the route parameter specified in the path as their respective keys or for unnamed parameters the character\(\*, +\) and the counter of this.
 
-The characters :, +, and \* are are characters that introduce a parameter.
+The characters :, +, and \* are characters that introduce a parameter.
 
 Greedy parameters are indicated by wildcard\(\*\) or plus\(+\) signs.
 
@@ -45,7 +45,7 @@ The routing also offers the possibility to use optional parameters, for the name
 // Parameters
 app.Get("/user/:name/books/:title", func(c *fiber.Ctx) error {
     fmt.Fprintf(c, "%s\n", c.Params("name"))
-      fmt.Fprintf(c, "%s\n", c.Params("title"))
+    fmt.Fprintf(c, "%s\n", c.Params("title"))
     return nil
 })
 // Plus - greedy - not optional
@@ -97,22 +97,25 @@ app.Get("/shop/product/color::color/size::size", func(c *fiber.Ctx) error {
 In addition, several parameters in a row and several unnamed parameter characters in the route, such as the wildcard or plus character, are possible, which greatly expands the possibilities of the router for the user.
 
 ```go
-// /@v1
-// "sign" -> "@", "param" -> "v1"
+// GET /@v1
+// Params: "sign" -> "@", "param" -> "v1"
 app.Get("/:sign:param", handler)
 
-// /api-v1
-// "name" -> "v1" 
+// GET /api-v1
+// Params:"name" -> "v1" 
 app.Get("/api-:name", handler)
 
-// /customer/v1/cart/proxy
-// "*1" -> "customer/", "*2" -> "/cart"
+// GET /customer/v1/cart/proxy
+// Params:"*1" -> "customer/", "*2" -> "/cart"
 app.Get("/*v1*/proxy", handler)
 
-// /v1/brand/4/shop/blue/xs
-// "*1" -> "brand/4", "*2" -> "blue/xs"
+// GET /v1/brand/4/shop/blue/xs
+// Params: "*1" -> "brand/4", "*2" -> "blue/xs"
 app.Get("/v1/*/shop/*", handler)
 ```
+
+We have adapted the routing strongly to the express routing, but currently without the possibility of the regular expressions, because they are quite slow. The possibilities can be tested with version 0.1.7 (express 4) in the online [Express route tester](http://forbeslindesay.github.io/express-route-tester/).
+
 
 ## Middleware
 

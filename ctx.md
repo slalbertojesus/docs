@@ -903,7 +903,7 @@ app.Get("/user/*", func(c *fiber.Ctx) {
 ```
 {% endcode %}
 
-Unnamed route parameters\(\*, +\) can be fetched by the character and the counter in the route.
+Unnamed route parameters\(\*, +\) can be fetched by the **character** and the **counter** in the route.
 
 {% code title="Example" %}
 ```go
@@ -914,7 +914,7 @@ Unnamed route parameters\(\*, +\) can be fetched by the character and the counte
 ```
 {% endcode %}
 
-For reasons of downward compatibility, the first parameter segment for the parameter character can also be accessed without the counter.
+For reasons of **downward compatibility**, the first parameter segment for the parameter character can also be accessed without the counter.
 
 {% code title="Example" %}
 ```go
