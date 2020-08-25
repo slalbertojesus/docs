@@ -102,11 +102,11 @@ In addition, several parameters in a row and several unnamed parameter character
 app.Get("/:sign:param", handler)
 
 // GET /api-v1
-// Params:"name" -> "v1" 
+// Params: "name" -> "v1" 
 app.Get("/api-:name", handler)
 
 // GET /customer/v1/cart/proxy
-// Params:"*1" -> "customer/", "*2" -> "/cart"
+// Params: "*1" -> "customer/", "*2" -> "/cart"
 app.Get("/*v1*/proxy", handler)
 
 // GET /v1/brand/4/shop/blue/xs
