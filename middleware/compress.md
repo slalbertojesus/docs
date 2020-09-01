@@ -1,23 +1,63 @@
+---
+description: >-
+  Compression middleware for Fiber that supports gzip, deflate and brotli
+  compression depending on the Accept-Encoding header.
+---
+
 # Compress
 
-## Getting Super Powers
+## Getting Started
 
-Becoming a super hero is a fairly straight forward process:
+Import the compress package that is part of the Fiber web framework
 
+```go
+import (
+  "github.com/gofiber/fiber"
+  "github.com/gofiber/fiber/compress"
+)
 ```
-$ give me super-powers
+
+{% code title="signature" %}
+```go
+func New(config ...Config) fiber.Handler
+```
+{% endcode %}
+
+```go
+type Config struct {
+	// Next defines a function to skip this middleware when returned true.
+	//
+	// Optional. Default: nil
+	Next func(c *fiber.Ctx) bool
+
+	// CompressLevel determines the compression algoritm
+	//
+	// Optional. Default: LevelDefault
+	// LevelDisabled:         -1
+	// LevelDefault:          0
+	// LevelBestSpeed:        1
+	// LevelBestCompression:  2
+	Level int
+}
 ```
 
-{% hint style="info" %}
- Super-powers are granted randomly so please submit an issue if you're not happy with yours.
-{% endhint %}
+{% code title="example" %}
+```go
+// Default compression config
+app.Use(compress.New())
 
-Once you're strong enough, save the world:
+// Provide a custom compression level
+app.Use(compress.New(compress.Config{
+    Level: compress.LevelBestSpeed, // 1
+}))
 
-{% code title="hello.sh" %}
-```bash
-# Ain't no code for that yet, sorry
-echo 'You got to trust me on this, I saved the world'
+// Skip compression for specific routes
+app.Use(compress.New(compress.Config{
+  Next:  func(c *fiber.Ctx) bool {
+    return c.Path() == "/dont_compress"
+  },
+  Level: compress.LevelBestSpeed, // 1
+}))
 ```
 {% endcode %}
 
