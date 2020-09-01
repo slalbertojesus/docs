@@ -8,7 +8,15 @@
 
 * [🚀 Application](app.md)
 * [🧠 Context](ctx.md)
-* [🧬 Middleware](middleware.md)
+* [🧬 Middleware](middleware/README.md)
+  * [Compress](middleware/compress.md)
+  * [Favicon](middleware/favicon.md)
+  * [FileSystem](middleware/filesystem.md)
+  * [Logger](middleware/logger.md)
+  * [PPROF](middleware/pprof.md)
+  * [Recover](middleware/recover.md)
+  * [RequestID](middleware/requestid.md)
+  * [Timeout](middleware/timeout.md)
 
 ## Guide
 

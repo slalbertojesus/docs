@@ -16,12 +16,12 @@ import (
 )
 ```
 
-* \*\*\*\*[**Compress**](middleware.md#compress) Compress middleware that supports `deflate`, `gzip` and `brotli` compression.
-* \*\*\*\*[**FileSystem**](middleware.md#filesystem) FileSystem middleware for Fiber, special thanks and credits to Alireza Salary
+* \*\*\*\*[**Compress**](./#compress) Compress middleware that supports `deflate`, `gzip` and `brotli` compression.
+* \*\*\*\*[**FileSystem**](./#filesystem) FileSystem middleware for Fiber, special thanks and credits to Alireza Salary
 * **Favicon** Ignore favicon from logs or serve from memory if a file path is provided.
 * **Logger** HTTP request/response logger.
 * **Pprof** HTTP server runtime profiling
-* **Recover** Recover middleware recovers from panics anywhere in the stack chain and handles the control to the centralized[ ErrorHandler](error-handling.md).
+* **Recover** Recover middleware recovers from panics anywhere in the stack chain and handles the control to the centralized[ ErrorHandler](../error-handling.md).
 * **RequestID** Request ID middleware generates a unique id for a request.
 * **Timeout** A wrapper function for handlers which will raise an error if the handler takes longer than a set amount of time to return
 
