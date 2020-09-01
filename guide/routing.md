@@ -114,8 +114,7 @@ app.Get("/*v1*/proxy", handler)
 app.Get("/v1/*/shop/*", handler)
 ```
 
-We have adapted the routing strongly to the express routing, but currently without the possibility of the regular expressions, because they are quite slow. The possibilities can be tested with version 0.1.7 (express 4) in the online [Express route tester](http://forbeslindesay.github.io/express-route-tester/).
-
+We have adapted the routing strongly to the express routing, but currently without the possibility of the regular expressions, because they are quite slow. The possibilities can be tested with version 0.1.7 \(express 4\) in the online [Express route tester](http://forbeslindesay.github.io/express-route-tester/).
 
 ## Middleware
 
