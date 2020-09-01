@@ -8,7 +8,7 @@ description: >-
 
 ## Getting Started
 
-Import the compress package that is part of the Fiber web framework
+Import the compress package that is shipped with the Fiber web framework
 
 ```go
 import (
@@ -17,11 +17,15 @@ import (
 )
 ```
 
+You can pass an optional Config struct to create a new middleware handler.
+
 {% code title="signature" %}
 ```go
 func New(config ...Config) fiber.Handler
 ```
 {% endcode %}
+
+The following configurations are possible
 
 ```go
 type Config struct {
