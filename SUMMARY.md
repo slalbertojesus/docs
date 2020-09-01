@@ -25,7 +25,6 @@
 * [🔌 Routing](routing.md)
 * [🎭 Grouping](grouping.md)
 * [📝 Templates](templates.md)
-* [🔎 Validating](validating.md)
 * [🐛 Error Handling](error-handling.md)
 
 ## Misc <a id="miscellaneous"></a>
@@ -33,6 +32,7 @@
 ---
 
 * [🤔 FAQ](faq.md)
+* [📃 Changelog](changelog.md)
 * [📊 Benchmarks](benchmarks.md)
 * [🍳 Examples](https://github.com/gofiber/recipes)
 
