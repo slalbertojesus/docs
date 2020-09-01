@@ -82,6 +82,7 @@ app.Get("/", func(c *fiber.Ctx) error {
 
   c.Append("Link", "Test")
   // => Link: http://localhost, http://google.com, Test
+  
   // ...
 })
 ```
@@ -106,6 +107,7 @@ app.Get("/", func(c *fiber.Ctx) error {
   c.Attachment("./upload/images/logo.png")
   // => Content-Disposition: attachment; filename="logo.png"
   // => Content-Type: image/png
+  
   // ...
 })
 ```
@@ -152,7 +154,7 @@ app.Get("/", func(c *fiber.Ctx) error {
 
 ## Body
 
-Returns the request **body**.
+Returns the raw request **body**.
 
 {% code title="Signature" %}
 ```go
@@ -166,7 +168,7 @@ c.Body() []byte
 
 app.Post("/", func(c *fiber.Ctx) error {
   // Get raw body from POST request:
-  c.Body() // []byte("user=john")
+  return c.Send(c.Body()) // []byte("user=john")
 })
 ```
 {% endcode %}
@@ -206,8 +208,10 @@ app.Post("/", func(c *fiber.Ctx) error {
 
         log.Println(p.Name) // john
         log.Println(p.Pass) // doe
+        
         // ...
 })
+
 // Run tests with the following curl commands
 
 // curl -X POST -H "Content-Type: application/json" --data "{\"name\":\"john\",\"pass\":\"doe\"}" localhost:3000
@@ -262,6 +266,7 @@ app.Get("/set", func(c *fiber.Ctx) error {
         HTTPOnly: true,
         SameSite: "lax",
     })
+    
     // ...
 })
 
@@ -273,6 +278,7 @@ app.Get("/delete", func(c *fiber.Ctx) error {
         HTTPOnly: true,
         SameSite: "lax",
     })
+    
     // ...
 })
 ```
@@ -282,21 +288,21 @@ app.Get("/delete", func(c *fiber.Ctx) error {
 
 Returns context.Context that carries a deadline, a cancellation signal, and other values across API boundaries.
 
-**Signature**
-
+{% code title="Signature" %}
 ```go
 c.Context() context.Context
 ```
+{% endcode %}
 
 ## Cookie
 
 Set cookie
 
-**Signature**
-
-```text
-c.Cookie(*Cookie)
+{% code title="Signature" %}
+```go
+func (c *Ctx) Cookie(cookie *Cookie)
 ```
+{% endcode %}
 
 ```go
 type Cookie struct {
