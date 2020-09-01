@@ -1205,7 +1205,7 @@ app.Get("/", func(c *fiber.Ctx) error {
 ```
 {% endcode %}
 
-Fiber also provides `SendBytes` ,`SendString` and `SendStream` methods for raw inputs.
+Fiber also provides `SendString` and `SendStream` methods for raw inputs.
 
 {% hint style="success" %}
 Use this if you **don't need** type assertion, recommended for **faster** performance.
@@ -1249,8 +1249,8 @@ c.SendFile(path string, compress ...bool) error
 app.Get("/not-found", func(c *fiber.Ctx) error {
   return c.SendFile("./public/404.html");
 
-  // Enable compression
-  return c.SendFile("./static/index.html", true);
+  // Disable compression
+  return c.SendFile("./static/index.html", false);
 })
 ```
 {% endcode %}
