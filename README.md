@@ -10,7 +10,7 @@ description: >-
 
 ## Installation
 
-First of all, [download](https://golang.org/dl/) and install Go. `1.11` or higher is required.
+First of all, [download](https://golang.org/dl/) and install Go. `1.13` or higher is required.
 
 Installation is done using the [`go get`](https://golang.org/cmd/go/#hdr-Add_dependencies_to_current_module_and_install_them) command:
 
@@ -28,7 +28,8 @@ Because fiber is optimized for **high-performance**, values returned from **fibe
 
 ```go
 func handler(c *fiber.Ctx) error {
-    result := c.Params("foo") // result is only valid within this method
+    // Variable is only valid within this handler
+    result := c.Params("foo") 
     
     // ...
 }
@@ -38,12 +39,14 @@ If you need to persist such values outside the handler, make copies of their **u
 
 ```go
 func handler(c *fiber.Ctx) error {
-    result := c.Params("foo") // result is only valid within this method
+    // Variable is only valid within this handler
+    result := c.Params("foo")
     
     // Make a copy
     buffer := make([]byte, len(result))
     copy(buffer, result)
-    resultCopy := string(buffer) // resultCopy is immutable and valid forever
+    resultCopy := string(buffer) 
+    // Variable is now valid forever
     
     // ...
 }
@@ -53,8 +56,8 @@ We created a custom `ImmutableString` a function that does the above and is avai
 
 ```go
 app.Get("/:foo", func(c *fiber.Ctx) error {
+    // Variable is now immutable
     result := utils.ImmutableString(c.Params("foo")) 
-    // result is now immutable
     
     // ...
 })
